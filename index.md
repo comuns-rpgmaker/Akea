@@ -35,7 +35,7 @@ Now that you know the terms, it is time to start configuring the system! First o
 
 ### Spritesheets
 
-![Image](https://i.imgur.com/Wm25flO.png)
+![Image](https://i.imgur.com/OEzy08P.png)
 
 Left Side: Here you can see a list of spritesheets, you can add any number of spritesheets you need for your game, Once you click to add one you will get to configure more 3 parameters:
 
