@@ -13,7 +13,7 @@
  * You can get some beautiful battler with Vibrato! http://p3x774.web.fc2.com/
  * This plugin is under zlib license.
  * 
- * 
+ * FOr further help, check out the documentation : https://comuns-rpgmaker.github.io/Akea/
  * Welcome to the ultimate action battle system experience!
  * For battle add-on developers head to NOTES FOR ADD-ON DEVS, in this code to
  * know how to optimize your add for this system!
@@ -364,7 +364,7 @@ Pretty simple right? Any questions, you know where to find me :)
 // No touching this part!
 var Akea = Akea || {};
 Akea.BattleSystem = Akea.BattleSystem || {};
-Akea.BattleSystem.VERSION = [1, 0, 2];
+Akea.BattleSystem.VERSION = [1, 0, 3];
 
 
 Game_Battler.prototype.callAkeaActions = function (action, targets) {
@@ -404,7 +404,7 @@ Game_Battler.prototype.callAkeaActions = function (action, targets) {
 };
 
 Sprite_Battler.prototype.manageAkeaActions = function (action) {
-    this._movementDuration = 3;
+    this._movementDuration = this._akeaMaxDuration = 1;
     let subject;
     let moveAction;
     let targets;
@@ -461,7 +461,6 @@ Sprite_Battler.prototype.manageAkeaActions = function (action) {
             this._battler.getAkeaAnimatedBSActions().originalTarget(this._battler.initialTargets);
             break;
         case "HitAll":
-            this._movementDuration = 30;
             subject = action.getSubject();
             targets = action.getTargets();
             moveAction = action.getAction();
@@ -471,14 +470,13 @@ Sprite_Battler.prototype.manageAkeaActions = function (action) {
                 BattleManager._logWindow.push("popupDamage", (t));
                 BattleManager._logWindow.displayActionResults(subject, t)
             }
-
             BattleManager.startActionAkea(subject, moveAction, targets);
             BattleManager.akeaEmptyWindow(originalLength);
             for (let t of targets) { BattleManager._logWindow.displayChangedStates(t) };
             this._battler.getAkeaAnimatedBSActions().originalTarget(this._battler.initialTargets);
             break;
         case "FinishAction":
-            this._movementDuration = 60;
+            //this._movementDuration = this._akeaMaxDuration = 60;
             subject = action.getSubject();
             targets = action.getTargets();
             moveAction = action.getAction();
@@ -489,7 +487,7 @@ Sprite_Battler.prototype.manageAkeaActions = function (action) {
             BattleManager.startActionLast(subject, moveAction, targets);
             break
         case "Wait":
-            this._movementDuration = action.getId();
+            this._movementDuration = this._akeaMaxDuration = action.getId();
             break
     }
 }
@@ -812,6 +810,7 @@ Sprite_Battler.prototype.refreshMotion = function () {
 
 Sprite_Battler.prototype.updateMove = function () {
     if (this._movementDuration > 0) {
+        if (this._currentJumpAcceleration > 0) {console.log([this._movementDuration, this._akeaMaxDuration, this._currentJumpAcceleration, this._jumpHeight])}
         this._currentJumpAcceleration = (this._movementDuration * 2 - this._akeaMaxDuration) * this._jumpHeight / 10;
         this._currentJumpHeight += Math.floor(this._currentJumpAcceleration);
         const d = this._movementDuration;
@@ -911,11 +910,11 @@ Sprite_Battler.prototype.unloadMovementAkea = function () {
 
 
 Sprite_Battler.prototype.startMove = function (x, y, duration, jumpHeight = 0, levitation = false) {
+    this._jumpHeight = jumpHeight;
     this._targetOffsetX = x;
     this._targetOffsetY = y;
     this._movementDuration = duration;
     this._akeaMaxDuration = duration;
-    this._jumpHeight = jumpHeight;
     this._currentJumpHeight = 0;
     if (this._shadowSprite)
         this._shadowSprite.opacity = levitation ? 0 : 255;
