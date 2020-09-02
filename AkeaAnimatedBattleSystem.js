@@ -82,6 +82,10 @@
  * to the same formula in that skill on the database
  * <akeaHit 50> : Calls a hit for aproximately 50% damage of the skill formula
  * 
+ * <akeaHitWeapon damage> : Same as above, but with weapon animation
+ * to the same formula in that skill on the database
+ * <akeaHitWeapon 30> : Calls a hit for aproximately 30% damage of the skill formula
+ * 
  * <akeaHitAll damage> : Same as above, but with all targets
  * <akeaHitAll 50> : Calls a hit for aproximately 50% damage of the skill formula
  * 
@@ -360,7 +364,7 @@ Pretty simple right? Any questions, you know where to find me :)
 // No touching this part!
 var Akea = Akea || {};
 Akea.BattleSystem = Akea.BattleSystem || {};
-Akea.BattleSystem.VERSION = [1, 0, 1];
+Akea.BattleSystem.VERSION = [1, 0, 2];
 
 
 Game_Battler.prototype.callAkeaActions = function (action, targets) {
@@ -386,6 +390,7 @@ Game_Battler.prototype.callAkeaActions = function (action, targets) {
         case "Skill":
             this.translateSkillActions(action, targets, $dataSkills[RegExp.$3], action);
             break;
+        case "HitWeapon":
         case "Hit":
             this._akeaAnimatedBSActions.addAkeaHit(RegExp.$3, targets, RegExp.$2, this, action);
             break;
@@ -440,8 +445,9 @@ Sprite_Battler.prototype.manageAkeaActions = function (action) {
             scriptCall = action.getScript();
             eval(scriptCall);
             break;
+        case "HitWeapon":
+            this._battler.performAttack();
         case "Hit":
-            this._movementDuration = 30;
             subject = action.getSubject();
             targets = action.getTargets();
             moveAction = action.getAction();
