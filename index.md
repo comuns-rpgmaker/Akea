@@ -119,18 +119,19 @@ Do note, actions are small movements, you will be able to join actions to create
 Left Side: Your actions! Create as many as you like!
 Right Side: 
 1. info - This area is free to use as you wish, this is to help organizing your actions.
-2. time - this is the amount of time (in frames) the action will take to complete, the same battler can not do another action while the previous is still happening.
-3. movementType - 
+2. pose - It is the name of the pose you want the battler to take while doing the action, do note, you can call any of the default poses of MZ even if you didn't configure them here!
+3. time - this is the amount of time (in frames) the action will take to complete, the same battler can not do another action while the previous is still happening.
+4. movementType - 
 ![Image](https://i.imgur.com/WVmuPHT.png)
-3.1 absolute - movement will happen according to the battler's current place.
-3.2 fromHome - movement will happen taking in consideration its initial position.
-3.3 target - battler will go towards the target of the skill, do note multiple targets means battler will go towards the first target only.
-3.4 noMove - battler will do its action on its current position.
-4. offsetX - based on the movement type, this is how much on the X-axis the battler will go. Ex: an offsetX of 50 on the target movement type means the battler will stop 50 pixels to the right of the target.
-5. offsetY - same as X, but instead with Y-axis
-6. jumpHeight - the jump height the battler will make when doing the action.
-7. levitate - if set true, shadows will not follow the battler.
-8. mirror - you can mirror the action with this set on, so battlers can face both directions.
+4.1 absolute - movement will happen according to the battler's current place.
+4.2 fromHome - movement will happen taking in consideration its initial position.
+4.3 target - battler will go towards the target of the skill, do note multiple targets means battler will go towards the first target only.
+4.4 noMove - battler will do its action on its current position.
+5. offsetX - based on the movement type, this is how much on the X-axis the battler will go. Ex: an offsetX of 50 on the target movement type means the battler will stop 50 pixels to the right of the target.
+6. offsetY - same as X, but instead with Y-axis
+7. jumpHeight - the jump height the battler will make when doing the action.
+8. levitate - if set true, shadows will not follow the battler.
+9. mirror - you can mirror the action with this set on, so battlers can face both directions.
 
 
 ### Extra Configuration
