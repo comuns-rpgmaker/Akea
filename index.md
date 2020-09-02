@@ -33,8 +33,8 @@ User is the one that will star the actions be it attacking, casting a spell or o
 ## Configuration
 Now that you know the terms, it is time to start configuring the system! First off lets talk how to configure everything on the parameters!
 
+### Spritesheets
 
-###Spritesheets
 ![Image](https://i.imgur.com/Wm25flO.png)
 
 Left Side: Here you can see a list of spritesheets, you can add any number of spritesheets you need for your game, Once you click to add one you will get to configure more 3 parameters:
@@ -57,7 +57,7 @@ Specific for enemies you can also point out to a svBattler, this is optional! Yo
 
 ![Image](https://i.imgur.com/HbRqQQx.png)
 
-###Poses
+### Poses
 Now lets configure the poses of our AABS!
 You can add as many poses as you want and you can have multiple poses with the same name, since we will append each pose to a battler, which means different battlers can have different pose configuration for the same pose!
 MV/MZ has its default poses which are the following:
@@ -96,7 +96,7 @@ Right Side:
 
 ![Image](https://i.imgur.com/ASGfiZT.png)
 
-###Appending Poses
+### Appending Poses
 
 Now that you have configured your poses you can append them to actors and enemies!
 Just go to parameters and choose Actor/Enemy Poses Configuration
@@ -110,7 +110,7 @@ Then, for each battler you set its id on the database and then just add as many 
 
 the number is the same id of the pose configured on the poses parameters.
 
-###Actions
+### Actions
 Now it is time to create actions!
 Do note, actions are small movements, you will be able to join actions to create a big action instead. This is made so that its much less work for you to create actions, and you can reuse a lot of actions if you do need.
 
@@ -133,7 +133,7 @@ Right Side:
 8. mirror - you can mirror the action with this set on, so battlers can face both directions.
 
 
-###Extra Configuration
+### Extra Configuration
 
 ![Image](https://i.imgur.com/zSuXA4O.png)
 
@@ -156,7 +156,7 @@ Right Side:
 ## Database Configuration
 Now that you have configured all the parameters it is time to put everything together! In this section you will learn how to properly create actions for skills and items.
 
-###Skills and Items
+### Skills and Items
 To configure AABS correctly you will use Note part of the Skills/Items to configure (Future update will let you use from weapons also)
 ![Image](https://i.imgur.com/Mo1miQV.png)
 
@@ -195,7 +195,7 @@ So what are the tags you can add to notes?
 
  * <akeaRandomize 1> : Randomizes the target, choose random target on the skill and this will change targets in the middle of the Action!
 
-###Closing
+### Closing
 This should be enough for you all incredible gamedevs to create an amazing battle! Test it out and with some tries you will easily be able to create incredible action sequences!
 
 ## Support or Contact
