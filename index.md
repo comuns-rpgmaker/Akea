@@ -157,8 +157,9 @@ Right Side:
 ## Database Configuration
 Now that you have configured all the parameters it is time to put everything together! In this section you will learn how to properly create actions for skills and items.
 
-### Skills and Items
-To configure AABS correctly you will use Note part of the Skills/Items to configure (Future update will let you use from weapons also)
+### Skills, Items and Weapons
+To configure AABS correctly you will use Note part of the Skills/Items/Weapons to configure.
+Weapons notes are called when using the attack command, if the actor has a weapon it will instead use the notes of the weapon instead of the skill.
 ![Image](https://i.imgur.com/Mo1miQV.png)
 
 How does it work? AABS will read each line individually and execute an action according to it if AABS finds it configured on the parameters.
