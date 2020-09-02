@@ -342,7 +342,7 @@ let _specificName_Game_Battler_callAkeaActions = Game_Battler.prototype.callAkea
 Game_Battler.prototype.callAkeaActions = function (action, targets) {
     _specificName_Game_Battler_callAkeaActions.call(this, ...arguments);
     if (RegExp.$2 == "Picture") { //Which would be called <akeaPicture id>
-        this._akeaAnimatedBSActions.addAkeaHit(RegExp.$3, targets, RegExp.$2, this, action);
+        this._akeaAnimatedBSActions.addCustomAddon(RegExp.$3, targets, RegExp.$2, this, action);
             OR A new one
         this._akeaAnimatedBSActions.addPicture(RegExp.$3, targets, RegExp.$2, this, action);
     }
@@ -355,6 +355,12 @@ Sprite_Battler.prototype.manageAkeaActions = function (action) {
     }
 }
 
+You can retrieve the targes of the action 
+action.getTargets() 
+The battler doing the action
+action.getSubject()
+or the action itself
+action.getAction()
 Pretty simple right? Any questions, you know where to find me :)
 
 
@@ -476,7 +482,8 @@ Sprite_Battler.prototype.manageAkeaActions = function (action) {
             this._battler.getAkeaAnimatedBSActions().originalTarget(this._battler.initialTargets);
             break;
         case "FinishAction":
-            //this._movementDuration = this._akeaMaxDuration = 60;
+            this._movementDuration = this._akeaMaxDuration = 30;
+            this._jumpHeight = 0;
             subject = action.getSubject();
             targets = action.getTargets();
             moveAction = action.getAction();
@@ -572,7 +579,9 @@ Game_Akea_Actions.prototype.addAkeaSkillActionsEnemy = function (id, targets, ty
     this.action = moveAction;
     this._actions.push(action);
 }
-
+Game_Akea_Actions.prototype.addCustomAddon = function (id, targets, type, subject, moveAction) {
+    this.addAkeaHit(id, targets, type, subject, moveAction);
+}
 
 Game_Akea_Actions.prototype.addAkeaHit = function (id, targets, type, subject, moveAction) {
     let action = new Game_Akea_Action();
@@ -810,7 +819,6 @@ Sprite_Battler.prototype.refreshMotion = function () {
 
 Sprite_Battler.prototype.updateMove = function () {
     if (this._movementDuration > 0) {
-        if (this._currentJumpAcceleration > 0) {console.log([this._movementDuration, this._akeaMaxDuration, this._currentJumpAcceleration, this._jumpHeight])}
         this._currentJumpAcceleration = (this._movementDuration * 2 - this._akeaMaxDuration) * this._jumpHeight / 10;
         this._currentJumpHeight += Math.floor(this._currentJumpAcceleration);
         const d = this._movementDuration;
@@ -1345,9 +1353,15 @@ Game_Battler.prototype.clearAkeaAnimatedBSActions = function () {
     this._akeaAnimatedBSActions = new Game_Akea_Actions();
 }
 
+Game_Battler.prototype.weapons = function() {
+    return [];
+};
+
 Game_Battler.prototype.requestakeaAnimatedBSAnimation = function (action, targets) {
     let notes;
-    if (action.isSkill() || action.isItem()) {
+    if (action.isAttack() && this.weapons().length > 0){
+        notes = this.weapons()[0].note;
+    } else if (action.isSkill() || action.isItem()) {
         notes = action.item().note;
     }
     this.translateSkillActions(action, targets, notes)
