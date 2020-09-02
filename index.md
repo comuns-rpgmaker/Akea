@@ -164,36 +164,26 @@ How does it work? AABS will read each line individually and execute an action ac
 The action after it will not be executed until the action before meets its conditions, do notice this only applies for individual battlers, when making actions to other battlers they will happen simultaneously! This makes everything much more dynamic!
 So what are the tags you can add to notes?
 
- * <akeaActions number> : Number of the action this are the actions that you have configured before! Join them to create a single action animation. Ex:
- * <akeaAction 2> to get the second action on the parameters, 
-
- * <akeaActionEnemy number> : exactly the same as above, but the action will be dealt to the target and not the user. This is called only after the action before is finished, but this has basically no delays to call the next action, the enemy will do its action in parallel with this battler action!
-
- * <akeaAniTarget number> : Play a database animation on the target Ex:
- * <akeaAniTarget 55> : Plays animation id 55 on the Target
-
- * <akeaAniSelf number> : Same as above, but on the user Ex:
- * <akeaAniSelf 55> : Plays animation id 55 on the User
-
- * <akeaScript number> : Calls the expression configured on the Script Call parameters:
- * <akeaScript 33> : Calls the expression 33 on the parameters
-
- * <akeaSkill number> : Appends skill to the current skill, just be careful to not make loops:
- * <akeaSkill 27> : Calls the skill 27, all animations will be added to the current one
-
- * <akeaHit damage> : Calls a damage to the target, this damage is in percent according  to the same formula in that skill on the database
- * <akeaHit 50> : Calls a hit for aproximately 50% damage of the skill formula
-
- * <akeaHitWeapon damage> : Same as above, but with weapon animation to the same formula in that skill on the database
- * <akeaHitWeapon 30> : Calls a hit for aproximately 30% damage of the skill formula
-
- * <akeaHitAll damage> : Same as above, but with all targets
- * <akeaHitAll 50> : Calls a hit for aproximately 50% damage of the skill formula
-
- * <akeaWait time> : Waits a certain time before the next action, in frames, usually 60 = 1 second
- * <akeaHitAll 60> : Waits 60 frames (1 second)
-
- * <akeaRandomize 1> : Randomizes the target, choose random target on the skill and this will change targets in the middle of the Action!
+- <akeaActions number> : Number of the action this are the actions that you have configured before! Join them to create a single action animation. Ex:
+- <akeaAction 2> to get the second action on the parameters 
+- <akeaActionEnemy number> : exactly the same as above, but the action will be dealt to the target and not the user. This is called only after the action before is finished, but this has basically no delays to call the next action, the enemy will do its action in parallel with this battler action!
+- <akeaAniTarget number> : Play a database animation on the target Ex:
+- <akeaAniTarget 55> : Plays animation id 55 on the Target
+- <akeaAniSelf number> : Same as above, but on the user Ex:
+- <akeaAniSelf 55> : Plays animation id 55 on the User
+- <akeaScript number> : Calls the expression configured on the Script Call parameters:
+- <akeaScript 33> : Calls the expression 33 on the parameters
+- <akeaSkill number> : Appends skill to the current skill, just be careful to not make loops:
+- <akeaSkill 27> : Calls the skill 27, all animations will be added to the current one
+- <akeaHit damage> : Calls a damage to the target, this damage is in percent according  to the same formula in that skill on the database
+- <akeaHit 50> : Calls a hit for aproximately 50% damage of the skill formula
+- <akeaHitWeapon damage> : Same as above, but with weapon animation to the same formula in that skill on the database
+- <akeaHitWeapon 30> : Calls a hit for aproximately 30% damage of the skill formula
+- <akeaHitAll damage> : Same as above, but with all targets
+- <akeaHitAll 50> : Calls a hit for aproximately 50% damage of the skill formula
+- <akeaWait time> : Waits a certain time before the next action, in frames, usually 60 = 1 second
+- <akeaHitAll 60> : Waits 60 frames (1 second)
+- <akeaRandomize 1> : Randomizes the target, choose random target on the skill and this will change targets in the middle of the Action!
 
 ### Closing
 This should be enough for you all incredible gamedevs to create an amazing battle! Test it out and with some tries you will easily be able to create incredible action sequences!
