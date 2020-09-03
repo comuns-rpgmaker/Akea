@@ -177,8 +177,8 @@ without spaces between them. Look carefully at the examples provided
  * @default 30
  */
 
-var Akea                  = Akea || {};
-Akea.BattleCamera         = Akea.BattleCamera || {};
+var Akea = Akea || {};
+Akea.BattleCamera = Akea.BattleCamera || {};
 Akea.BattleCamera.VERSION = [1, 0, 0];
 
 if (!Akea.BattleSystem) throw new Error("AkeaBattleCamera plugin needs the AkeaAnimatedBattleSystem base.");
@@ -191,15 +191,17 @@ if (!Akea.BattleSystem) throw new Error("AkeaBattleCamera plugin needs the AkeaA
     Akea.BattleCamera.defaultCameraMode = parseInt(Akea.params.defaultCameraMode);
     Akea.BattleCamera.defaultSmoothExponent = parseFloat(Akea.params.defaultSmoothExponent);
     Akea.BattleCamera.defaultActor = {
-        x: parseInt(JSON.parse(Akea.params.defaultActor).x), 
-        y: parseInt(JSON.parse(Akea.params.defaultActor).y), 
+        x: parseInt(JSON.parse(Akea.params.defaultActor).x),
+        y: parseInt(JSON.parse(Akea.params.defaultActor).y),
         zoom: parseFloat(JSON.parse(Akea.params.defaultActor).zoom),
-        duration: parseInt(JSON.parse(Akea.params.defaultActor).duration)};
+        duration: parseInt(JSON.parse(Akea.params.defaultActor).duration)
+    };
     Akea.BattleCamera.defaultEnemy = {
-        x: parseInt(JSON.parse(Akea.params.defaultEnemy).x), 
-        y: parseInt(JSON.parse(Akea.params.defaultEnemy).y), 
+        x: parseInt(JSON.parse(Akea.params.defaultEnemy).x),
+        y: parseInt(JSON.parse(Akea.params.defaultEnemy).y),
         zoom: parseFloat(JSON.parse(Akea.params.defaultEnemy).zoom),
-        duration: parseInt(JSON.parse(Akea.params.defaultEnemy).duration)};
+        duration: parseInt(JSON.parse(Akea.params.defaultEnemy).duration)
+    };
     Akea.BattleCamera.resetCameraActionEnd = JSON.parse(Akea.params.resetCameraActionEnd);
 
     //-----------------------------------------------------------------------------
@@ -207,7 +209,7 @@ if (!Akea.BattleSystem) throw new Error("AkeaBattleCamera plugin needs the AkeaA
     //
     // The static class that manages scene transitions.
 
-    SceneManager.battleCamera = function() {
+    SceneManager.battleCamera = function () {
         return this._scene.camera();
     }
 
@@ -217,31 +219,31 @@ if (!Akea.BattleSystem) throw new Error("AkeaBattleCamera plugin needs the AkeaA
     // The static class that manages battle progress.
 
     const _BattleManager_startActorInput = BattleManager.startActorInput;
-    BattleManager.startActorInput = function() {
+    BattleManager.startActorInput = function () {
         _BattleManager_startActorInput.call(this);
         if (!this._currentActor) return;
-        SceneManager.battleCamera().setOffset(Akea.BattleCamera.defaultActor.x,  Akea.BattleCamera.defaultActor.y);
+        SceneManager.battleCamera().setOffset(Akea.BattleCamera.defaultActor.x, Akea.BattleCamera.defaultActor.y);
         SceneManager.battleCamera().focusIn(this._currentActor, Akea.BattleCamera.defaultActor.zoom, Akea.BattleCamera.defaultActor.duration);
     };
 
     const _BattleManager_finishActorInput = BattleManager.finishActorInput;
-    BattleManager.finishActorInput = function() {
+    BattleManager.finishActorInput = function () {
         _BattleManager_finishActorInput.call(this);
         if (Akea.BattleCamera.resetCameraActionEnd) SceneManager.battleCamera().reset();
     };
 
     const _BattleManager_cancelActorInput = BattleManager.cancelActorInput;
-    BattleManager.cancelActorInput = function() {
+    BattleManager.cancelActorInput = function () {
         _BattleManager_cancelActorInput.call(this);
         if (!this._currentActor) return;
         SceneManager.battleCamera().reset(Akea.BattleCamera.defaultActor.duration);
     };
-    
+
     const _BattleManager_endBattlerActions = BattleManager.endBattlerActions;
-    BattleManager.endBattlerActions = function(battler) {
+    BattleManager.endBattlerActions = function (battler) {
         _BattleManager_endBattlerActions.call(this, battler);
         if (this._currentActor) {
-            SceneManager.battleCamera().setOffset(Akea.BattleCamera.defaultActor.x,  Akea.BattleCamera.defaultActor.y);
+            SceneManager.battleCamera().setOffset(Akea.BattleCamera.defaultActor.x, Akea.BattleCamera.defaultActor.y);
             SceneManager.battleCamera().focusIn(this._currentActor, Akea.BattleCamera.defaultActor.zoom, Akea.BattleCamera.defaultActor.duration);
         } else {
             SceneManager.battleCamera().reset(Akea.BattleCamera.defaultActor.duration);
@@ -254,54 +256,54 @@ if (!Akea.BattleSystem) throw new Error("AkeaBattleCamera plugin needs the AkeaA
     // The scene class of the battle screen.
 
     const _Scene_Battle_create = Scene_Battle.prototype.create;
-    Scene_Battle.prototype.create = function() {
+    Scene_Battle.prototype.create = function () {
         _Scene_Battle_create.call(this);
         this._camera = new Game_BattleCamera(this._spriteset);
     };
 
     const _Scene_Battle_update = Scene_Battle.prototype.update;
-    Scene_Battle.prototype.update = function() {
+    Scene_Battle.prototype.update = function () {
         _Scene_Battle_update.call(this);
         this._camera.update();
     };
 
-    Scene_Battle.prototype.camera = function() {
+    Scene_Battle.prototype.camera = function () {
         return this._camera;
     }
 
     const _Scene_Battle_startActorSelection = Scene_Battle.prototype.startActorSelection;
-    Scene_Battle.prototype.startActorSelection = function() {
+    Scene_Battle.prototype.startActorSelection = function () {
         _Scene_Battle_startActorSelection.call(this);
         this._actorWindow.focusInActor();
     };
-    
+
     const _Scene_Battle_onActorOk = Scene_Battle.prototype.onActorOk;
-    Scene_Battle.prototype.onActorOk = function() {
+    Scene_Battle.prototype.onActorOk = function () {
         _Scene_Battle_onActorOk.call(this);
     };
-    
+
     const _Scene_Battle_onActorCancel = Scene_Battle.prototype.onActorCancel;
-    Scene_Battle.prototype.onActorCancel = function() {
+    Scene_Battle.prototype.onActorCancel = function () {
         _Scene_Battle_onActorCancel.call(this);
-        SceneManager.battleCamera().setOffset(Akea.BattleCamera.defaultActor.x,  Akea.BattleCamera.defaultActor.y);
+        SceneManager.battleCamera().setOffset(Akea.BattleCamera.defaultActor.x, Akea.BattleCamera.defaultActor.y);
         SceneManager.battleCamera().focusIn(this._actorCommandWindow.actor(), Akea.BattleCamera.defaultActor.zoom, Akea.BattleCamera.defaultActor.duration);
     };
 
     const _Scene_Battle_startEnemySelection = Scene_Battle.prototype.startEnemySelection;
-    Scene_Battle.prototype.startEnemySelection = function() {
+    Scene_Battle.prototype.startEnemySelection = function () {
         _Scene_Battle_startEnemySelection.call(this);
         this._enemyWindow.focusInEnemy();
     };
 
     const _Scene_Battle_onEnemyOk = Scene_Battle.prototype.onEnemyOk;
-    Scene_Battle.prototype.onEnemyOk = function() {
+    Scene_Battle.prototype.onEnemyOk = function () {
         _Scene_Battle_onEnemyOk.call(this);
     };
-    
+
     const _Scene_Battle_onEnemyCancel = Scene_Battle.prototype.onEnemyCancel;
-    Scene_Battle.prototype.onEnemyCancel = function() {
+    Scene_Battle.prototype.onEnemyCancel = function () {
         _Scene_Battle_onEnemyCancel.call(this);
-        SceneManager.battleCamera().setOffset(Akea.BattleCamera.defaultActor.x,  Akea.BattleCamera.defaultActor.y);
+        SceneManager.battleCamera().setOffset(Akea.BattleCamera.defaultActor.x, Akea.BattleCamera.defaultActor.y);
         SceneManager.battleCamera().focusIn(this._actorCommandWindow.actor(), Akea.BattleCamera.defaultActor.zoom, Akea.BattleCamera.defaultActor.duration);
     };
 
@@ -311,7 +313,7 @@ if (!Akea.BattleSystem) throw new Error("AkeaBattleCamera plugin needs the AkeaA
     // The window for selecting a target actor on the battle screen.
 
     const _Window_BattleActor_update = Window_BattleActor.prototype.update;
-    Window_BattleActor.prototype.update = function() {
+    Window_BattleActor.prototype.update = function () {
         _Window_BattleActor_update.call(this);
         if (!SceneManager.battleCamera()) return;
         if (this.index() != this._lastIndex && this.index() >= 0) {
@@ -319,9 +321,9 @@ if (!Akea.BattleSystem) throw new Error("AkeaBattleCamera plugin needs the AkeaA
             this.focusInActor();
         }
     };
-    
-    Window_BattleActor.prototype.focusInActor = function() {
-        SceneManager.battleCamera().setOffset(Akea.BattleCamera.defaultActor.x,  Akea.BattleCamera.defaultActor.y);
+
+    Window_BattleActor.prototype.focusInActor = function () {
+        SceneManager.battleCamera().setOffset(Akea.BattleCamera.defaultActor.x, Akea.BattleCamera.defaultActor.y);
         SceneManager.battleCamera().focusIn(this.actor(this.index()), Akea.BattleCamera.defaultActor.zoom, Akea.BattleCamera.defaultActor.duration);
     };
 
@@ -331,7 +333,7 @@ if (!Akea.BattleSystem) throw new Error("AkeaBattleCamera plugin needs the AkeaA
     // The window for selecting a target enemy on the battle screen.
 
     const _Window_BattleEnemy_update = Window_BattleEnemy.prototype.update;
-    Window_BattleEnemy.prototype.update = function() {
+    Window_BattleEnemy.prototype.update = function () {
         _Window_BattleEnemy_update.call(this);
         if (!SceneManager.battleCamera()) return;
         if (this.index() != this._lastIndex && this.index() >= 0) {
@@ -340,8 +342,8 @@ if (!Akea.BattleSystem) throw new Error("AkeaBattleCamera plugin needs the AkeaA
         }
     };
 
-    Window_BattleEnemy.prototype.focusInEnemy = function() {
-        SceneManager.battleCamera().setOffset(Akea.BattleCamera.defaultEnemy.x,  Akea.BattleCamera.defaultEnemy.y);
+    Window_BattleEnemy.prototype.focusInEnemy = function () {
+        SceneManager.battleCamera().setOffset(Akea.BattleCamera.defaultEnemy.x, Akea.BattleCamera.defaultEnemy.y);
         SceneManager.battleCamera().focusIn(this.enemy(), Akea.BattleCamera.defaultEnemy.zoom, Akea.BattleCamera.defaultEnemy.duration);
     };
 
@@ -354,41 +356,44 @@ if (!Akea.BattleSystem) throw new Error("AkeaBattleCamera plugin needs the AkeaA
         this.initialize(...arguments);
     }
 
-    Game_BattleCamera.prototype.initialize = function(spriteset) {
+    Game_BattleCamera.prototype.initialize = function (spriteset) {
         this._spriteset = spriteset;
         this.setup();
     };
 
-    Game_BattleCamera.prototype.setup = function() {
+    Game_BattleCamera.prototype.setup = function () {
         this._x = this._spriteset.x;
         this._y = this._spriteset.y;
         this._scaleX = this._spriteset.scale.x;
-        this._scaleY = this._spriteset.scale.y;   
-        this._offset = {x: 0, y: 0};
+        this._scaleY = this._spriteset.scale.y;
+        this._offset = { x: 0, y: 0 };
         this._cameraMode = Akea.BattleCamera.defaultCameraMode;
         this._smoothExponent = Akea.BattleCamera.defaultSmoothExponent;
-    //  this._anchor = this._spriteset.children[0].pivot = new Point(0.5, 0.5);
+        //  this._anchor = this._spriteset.children[0].pivot = new Point(0.5, 0.5);
     };
 
-    Game_BattleCamera.prototype.setOffset = function(x, y) {
-        this._offset = {x: x, y: y};
+    Game_BattleCamera.prototype.setOffset = function (x, y) {
+        this._offset = { x: x, y: y };
     };
 
-    Game_BattleCamera.prototype.setCameraMode = function(mode) {
+    Game_BattleCamera.prototype.setCameraMode = function (mode) {
         this._cameraMode = mode;
     };
 
-    Game_BattleCamera.prototype.focusIn = function(target, zoom, time) {
+    Game_BattleCamera.prototype.focusIn = function (target, zoom, time) {
         target = this._spriteset.findTargetSprite(target);
         const scaleX = zoom || this._scaleX;
+
         const scaleY = zoom || this._scaleY;
-        const x = (-((target.x + 96) * 0.5) + this._offset.x) * scaleX;
-        const y = (-((target.y - 96) * 0.5) + this._offset.y) * scaleY;
+        const maxScaleX = -Graphics.width * (scaleX - 1.0);
+        const maxScaleY = -Graphics.height * (scaleY - 1.0);
+        const x = -target.x * scaleX + Graphics.width/2;
+        const y = -target.y * scaleY + Graphics.height/2;
         const duration = time || 1;
         this.move(x, y, scaleX, scaleY, duration);
     }
 
-    Game_BattleCamera.prototype.zoom = function(zoom, duration) {
+    Game_BattleCamera.prototype.zoom = function (zoom, duration) {
         const x = this._x;
         const y = this._y;
         const scaleX = zoom;
@@ -396,13 +401,13 @@ if (!Akea.BattleSystem) throw new Error("AkeaBattleCamera plugin needs the AkeaA
         this.move(x, y, scaleX, scaleY, duration);
     }
 
-    Game_BattleCamera.prototype.reset = function(duration) {
-        this._offset = {x: 0, y: 0};
+    Game_BattleCamera.prototype.reset = function (duration) {
+        this._offset = { x: 0, y: 0 };
         this._cameraMode = Akea.BattleCamera.defaultCameraMode;
         this.move(0, 0, 1, 1, duration);
     }
 
-    Game_BattleCamera.prototype.move = function(x, y, scaleX, scaleY, duration) {
+    Game_BattleCamera.prototype.move = function (x, y, scaleX, scaleY, duration) {
         this._targetX = x;
         this._targetY = y;
         this._targetScaleX = scaleX;
@@ -413,12 +418,12 @@ if (!Akea.BattleSystem) throw new Error("AkeaBattleCamera plugin needs the AkeaA
         this._smoothExponent = 2;
     }
 
-    Game_BattleCamera.prototype.update = function() {
+    Game_BattleCamera.prototype.update = function () {
         this.updateMove();
         this.updateSpriteset();
     };
 
-    Game_BattleCamera.prototype.updateMove = function() {
+    Game_BattleCamera.prototype.updateMove = function () {
         if (this._duration > 0) {
             this._x = this.applySmoothing(this._x, this._targetX);
             this._y = this.applySmoothing(this._y, this._targetY);
@@ -427,15 +432,15 @@ if (!Akea.BattleSystem) throw new Error("AkeaBattleCamera plugin needs the AkeaA
             this._duration--;
         }
     };
-    
-    Game_BattleCamera.prototype.updateSpriteset = function() {
+
+    Game_BattleCamera.prototype.updateSpriteset = function () {
         this._spriteset.children[0].x = this._x
         this._spriteset.children[0].y = this._y
         this._spriteset.children[0].scale.x = this._scaleX;
         this._spriteset.children[0].scale.y = this._scaleY;
     }
 
-    Game_BattleCamera.prototype.applySmoothing = function(current, target) {
+    Game_BattleCamera.prototype.applySmoothing = function (current, target) {
         const d = this._duration;
         const wd = this._wholeDuration;
         const lt = this.calcSmoothing((wd - d) / wd);
@@ -444,10 +449,10 @@ if (!Akea.BattleSystem) throw new Error("AkeaBattleCamera plugin needs the AkeaA
         return start + (target - start) * t;
     };
 
-    Game_BattleCamera.prototype.calcSmoothing = function(t) {
+    Game_BattleCamera.prototype.calcSmoothing = function (t) {
         const exponent = this._smoothExponent;
         switch (this._cameraMode) {
-            case 1: 
+            case 1:
                 return this.easeIn(t, exponent);
             case 2:
                 return this.easeOut(t, exponent);
@@ -458,15 +463,15 @@ if (!Akea.BattleSystem) throw new Error("AkeaBattleCamera plugin needs the AkeaA
         }
     };
 
-    Game_BattleCamera.prototype.easeIn = function(t, exponent) {
+    Game_BattleCamera.prototype.easeIn = function (t, exponent) {
         return Math.pow(t, exponent);
     };
-    
-    Game_BattleCamera.prototype.easeOut = function(t, exponent) {
+
+    Game_BattleCamera.prototype.easeOut = function (t, exponent) {
         return 1 - Math.pow(1 - t, exponent);
     };
-    
-    Game_BattleCamera.prototype.easeInOut = function(t, exponent) {
+
+    Game_BattleCamera.prototype.easeInOut = function (t, exponent) {
         if (t < 0.5) {
             return this.easeIn(t * 2, exponent) / 2;
         } else {
@@ -530,7 +535,7 @@ if (!Akea.BattleSystem) throw new Error("AkeaBattleCamera plugin needs the AkeaA
     // The superclass of Sprite_Actor and Sprite_Enemy.
 
     const _Sprite_Battler_manageAkeaActions = Sprite_Battler.prototype.manageAkeaActions;
-    Sprite_Battler.prototype.manageAkeaActions = function(action) {
+    Sprite_Battler.prototype.manageAkeaActions = function (action) {
         _Sprite_Battler_manageAkeaActions.call(this, action);
         let params;
         let zoom;
