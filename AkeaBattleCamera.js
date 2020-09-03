@@ -397,7 +397,7 @@ if (!Akea.BattleSystem) throw new Error("AkeaBattleCamera plugin needs the AkeaA
     }
 
     Game_BattleCamera.prototype.reset = function(duration) {
-        this._offset = {x: 0, y: 48};
+        this._offset = {x: 0, y: 0};
         this._cameraMode = Akea.BattleCamera.defaultCameraMode;
         this.move(0, 0, 1, 1, duration);
     }
