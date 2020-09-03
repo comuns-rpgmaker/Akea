@@ -12,8 +12,8 @@
  * You can chat, get support, report bugs on our discord Server: https://discord.gg/wsPeqeA
  * You can get some beautiful battler with Vibrato! http://p3x774.web.fc2.com/
  * This plugin is under zlib license.
- * 
- * FOr further help, check out the documentation : https://comuns-rpgmaker.github.io/Akea/
+ * You can get always the most updated version here: https://github.com/comuns-rpgmaker/Akea/blob/master/AkeaAnimatedBattleSystem.js
+ * For further help, check out the documentation : https://comuns-rpgmaker.github.io/Akea/
  * Welcome to the ultimate action battle system experience!
  * For battle add-on developers head to NOTES FOR ADD-ON DEVS, in this code to
  * know how to optimize your add for this system!
@@ -347,9 +347,9 @@ Game_Battler.prototype.callAkeaActions = function (action, targets) {
         this._akeaAnimatedBSActions.addPicture(RegExp.$3, targets, RegExp.$2, this, action);
     }
 }
-let _specificName_Sprite_Battler_callAkeaActions = Sprite_Battler.prototype.callAkeaActions
+let _specificName_Sprite_Battler_manageAkeaActions = Sprite_Battler.prototype.manageAkeaActions
 Sprite_Battler.prototype.manageAkeaActions = function (action) {
-    _specificName_Sprite_Battler_callAkeaActions.call(this, ...arguments);
+    _specificName_Sprite_Battler_manageAkeaActions.call(this, ...arguments);
     if (action.getActionType() == "Picture") { //Which would be called <akeaPicture id>
         this.callMyFunction(action.getId());    
     }
@@ -633,7 +633,9 @@ Game_Akea_Actions.prototype.hasActions = function () {
 Game_Akea_Actions.prototype.canContinue = function () {
     return this._actions.length == 0;
 };
-
+Game_Akea_Actions.prototype.count = function () {
+    return this._actions.length;
+};
 Game_Akea_Actions.prototype.unloadAction = function () {
     return this._actions.shift();
 };
@@ -905,7 +907,7 @@ Sprite_Battler.prototype.akeaActionTranslate = function (action) {
         this._zIndex = offsetY + this._homeY;
     } else if (action.getMovementType() == "noMove") {
         this.startMove(this._offsetX, this._offsetY, action.getDuration(), action.getJumpHeight(), action.getLevitation());
-        this._zIndex = this._offsetY + this._homeY + 10;
+        this._zIndex = this._offsetY + this._homeY;
     }
     this._akeaMirror = action.getMirror();
 }
@@ -943,6 +945,7 @@ Sprite_Battler.prototype.updatePosition = function () {
     if (this._shadowSprite)
         this._shadowSprite.y = parseInt(this.getJumpHeight() - 2);
     this._battler.updateScreenPosition(this.x, this.y);
+    this._zIndex = this.y + this._battler._akeaAnimatedBSActions.count();
 };
 
 Sprite_Battler.prototype.getAnyActions = function () {
@@ -990,8 +993,10 @@ Sprite_Battler.prototype.setBattler = function (battler) {
         this.configureAkeaBattlerPoses(battler);
     }
     _akeaAnimatedBS_Sprite_Battler_setBattler.call(this, ...arguments);
-    this.swapToSingleBitmap();
-    this._zIndex = battler ? battler.screenY() : 0;
+    if (battler && battler != this._battler) {
+        this.swapToSingleBitmap();
+        this._zIndex = battler ? battler.screenY() : 0;
+    }
 };
 let _akeaAnimatedBS_Sprite_Battler_initialize = Sprite_Battler.prototype.initialize
 Sprite_Battler.prototype.initialize = function () {
@@ -1037,9 +1042,13 @@ Sprite_Battler.prototype.swapToSingleBitmap = function () {
     if (this._mainSprite && this.akeaAnimatedBSMaxHeight == 1 && this.akeaAnimatedBSMaxWidth == 1) {
         this.bitmap = this._mainSprite.bitmap
     } else {
-        this.bitmap = new Bitmap(100, 100);
+        this.bitmap = "";
     }
 
+};
+
+Sprite_Enemy.prototype.updateFrame = function() {
+    Sprite_Battler.prototype.updateFrame.call(this);
 };
 
 Sprite_Battler.prototype.updateAkeaPattern = function () {
@@ -1087,10 +1096,6 @@ Sprite_Actor.prototype.refreshMotion = function () {
 Sprite_Actor.prototype.moveToStartPosition = function () {
     Sprite_Battler.prototype.moveToStartPosition.call(this, ...arguments);
 };
-Sprite_Actor.prototype.setActorHome = function (index) {
-    this.setHome(600 + index * 32, 280 + index * 48);
-};
-
 Sprite_Actor.prototype.shouldStepForward = function () {
     return this._actor.isInputting();
 };
@@ -1177,15 +1182,6 @@ Sprite_Enemy.prototype.refreshMotion = function () {
 
     Sprite_Battler.prototype.refreshMotion.call(this, ...arguments);
 };
-
-
-Sprite_Enemy.prototype.updatePosition = function () {
-    Sprite_Battler.prototype.updatePosition.call(this);
-    this.x += this._shake;
-};
-
-
-
 
 Sprite_Enemy.prototype.setBattler = function (battler) {
     Sprite_Battler.prototype.setBattler.call(this, battler);
@@ -1353,13 +1349,13 @@ Game_Battler.prototype.clearAkeaAnimatedBSActions = function () {
     this._akeaAnimatedBSActions = new Game_Akea_Actions();
 }
 
-Game_Battler.prototype.weapons = function() {
+Game_Battler.prototype.weapons = function () {
     return [];
 };
 
 Game_Battler.prototype.requestakeaAnimatedBSAnimation = function (action, targets) {
     let notes;
-    if (action.isAttack() && this.weapons().length > 0){
+    if (action.isAttack() && this.weapons().length > 0) {
         notes = this.weapons()[0].note;
     } else if (action.isSkill() || action.isItem()) {
         notes = action.item().note;
@@ -1435,10 +1431,8 @@ Game_Actor.prototype.performDamage = function () {
     Game_Battler.prototype.performDamage.call(this);
 };
 Game_Enemy.prototype.performAttack = function () {
-    //this.requestMotion("thrust");
 };
 BattleManager.startActionAkea = function (subject, action, targets) {
-    //this._phase = "turn";
     this._logWindow.startAction(subject, action, targets);
 };
 BattleManager.startActionLast = function (subject, action, targets) {
@@ -1558,3 +1552,16 @@ Spriteset_Base.prototype.createAnimationSprite = function (
 };
 
 
+
+let _akeaAnimatedBS_Sprite_Enemy_updateBitmap = Sprite_Enemy.prototype.updateBitmap;
+Sprite_Enemy.prototype.updateBitmap = function () {
+    const name = this._enemy.battlerName();
+    const hue = this._enemy.battlerHue();
+    let needsToUpdateMainSprite = false;
+    if (this._battlerName !== name || this._battlerHue !== hue) {
+        needsToUpdateMainSprite = true;
+    }
+    _akeaAnimatedBS_Sprite_Enemy_updateBitmap.call(this);
+    if (needsToUpdateMainSprite)
+        this._mainSprite.setHue(hue);
+};
