@@ -60,39 +60,39 @@
  * dream battle for your game!
  * You can add the following tags to your notes on skills or items of the database:
  * 
- * <akeaActions number> : Number of the action, Ex: <akeaAction 2> to get the second
- * action on the parameters
+ * <akeaActions>id: num</akeaActions> : Number of the action, 
+ * Ex: <akeaAction>id: 2</akeaActions> to get the second action on the parameters
  * 
- * <akeaActionEnemy number> : exactly the same as above, but the action will be dealt
+ * <akeaActionEnemy>id: num</akeaActionEnemy> : exactly the same as above, but the action will be dealt
  * to the target and not the user.
  * 
- * <akeaAniTarget number> : Play a, database animation on the target Ex:
- * <akeaAniTarget 55> : Plays animation id 55 on the Target
+ * <akeaAniTarget>id: number</akeaAniTarget> : Play a, database animation on the target Ex:
+ * <akeaAniTarget>id: 55</akeaAniTarget> : Plays animation id 55 on the Target
  * 
- * <akeaAniSelf number> : Same as above, but on the user Ex:
- * <akeaAniSelf 55> : Plays animation id 55 on the User
+ * <akeaAniSelf>id: number</akeaAniSelf> : Same as above, but on the user Ex:
+ * <akeaAniSelf>id: 55</akeaAniSelf> : Plays animation id 55 on the User
  * 
- * <akeaScript number> : Calls the expression configured on the Script Call parameters:
- * <akeaScript 33> : Calls the expression 33 on the parameters
+ * <akeaScript>id: number</akeaScript> : Calls the expression configured on the Script Call parameters:
+ * <akeaScript>id: 33</akeaScript> : Calls the expression 33 on the parameters
  * 
- * <akeaSkill number> : Appends skill to the current skill, just be careful to not make loops:
- * <akeaSkill 27> : Calls the skill 27, all animations will be added to the current one
+ * <akeaSkill>id: number</akeaSkill> : Appends skill to the current skill, just be careful to not make loops:
+ * <akeaSkill>id: 27</akeaSkill> : Calls the skill 27, all animations will be added to the current one
  * 
- * <akeaHit damage> : Calls a damage to the target, this damage is in percent according 
+ * <akeaHit>damage: number</akeaHit> : Calls a damage to the target, this damage is in percent according 
  * to the same formula in that skill on the database
- * <akeaHit 50> : Calls a hit for aproximately 50% damage of the skill formula
+ * <akeaHit>id: 50</akeaHit>  : Calls a hit for aproximately 50% damage of the skill formula
  * 
- * <akeaHitWeapon damage> : Same as above, but with weapon animation
+ * <akeaHitWeapon>damage: damage</akeaHitWeapon> : Same as above, but with weapon animation
  * to the same formula in that skill on the database
  * <akeaHitWeapon 30> : Calls a hit for aproximately 30% damage of the skill formula
  * 
- * <akeaHitAll damage> : Same as above, but with all targets
- * <akeaHitAll 50> : Calls a hit for aproximately 50% damage of the skill formula
+ * <akeaHitAll>damage: damage</akeaHitAll> : Same as above, but with all targets
+ * <akeaHitAll>damage: 50</akeaHitAll> : Calls a hit for aproximately 50% damage of the skill formula
  * 
- * <akeaWait time> : Waits a certain time before the next action, in frames, usually 60 = 1 second
- * <akeaHitAll 60> : Waits 60 frames (1 second)
+ * <akeaWait>time: time</akeaWait> : Waits a certain time before the next action, in frames, usually 60 = 1 second
+ * <akeaWait>time: 60</akeaWait> : Waits 60 frames (1 second)
  * 
- * <akeaRandomize 1> : Randomizes the target, choose random target on the skill and this
+ * <akeaRandomize></akeaRandomize> : Randomizes the target, choose random target on the skill and this
  * will change targets in the middle of the Action!
  * 
  * 
@@ -339,19 +339,19 @@
 \\ Example Below of a picture add-on.
 
 let _specificName_Game_Battler_callAkeaActions = Game_Battler.prototype.callAkeaActions
-Game_Battler.prototype.callAkeaActions = function (action, targets) {
+Game_Battler.prototype.callAkeaActions = function (actionName, parameters, action, targets) {
     _specificName_Game_Battler_callAkeaActions.call(this, ...arguments);
     if (RegExp.$2 == "Picture") { //Which would be called <akeaPicture id>
-        this._akeaAnimatedBSActions.addCustomAddon(RegExp.$3, targets, RegExp.$2, this, action);
-            OR A new one
-        this._akeaAnimatedBSActions.addPicture(RegExp.$3, targets, RegExp.$2, this, action);
+        this._akeaAnimatedBSActions.addCustomAddon(YourId, targets, actionName, this, action, parameters);
+            OR A new one creating based on the Game_Akea_Action structure
+        this._akeaAnimatedBSActions.addPicture(YourId, targets, actionName, this, action);
     }
 }
 let _specificName_Sprite_Battler_manageAkeaActions = Sprite_Battler.prototype.manageAkeaActions
 Sprite_Battler.prototype.manageAkeaActions = function (action) {
     _specificName_Sprite_Battler_manageAkeaActions.call(this, ...arguments);
     if (action.getActionType() == "Picture") { //Which would be called <akeaPicture id>
-        this.callMyFunction(action.getId());    
+        this.callMyFunction(action.getId(), action.getObject());   // If you used the addCustomAddon the parameters will be stored on getObject
     }
 }
 
@@ -361,6 +361,8 @@ The battler doing the action
 action.getSubject()
 or the action itself
 action.getAction()
+or all the parameters passed if you used addCustomAddon
+action.getObject()
 Pretty simple right? Any questions, you know where to find me :)
 
 
@@ -370,41 +372,55 @@ Pretty simple right? Any questions, you know where to find me :)
 // No touching this part!
 var Akea = Akea || {};
 Akea.BattleSystem = Akea.BattleSystem || {};
-Akea.BattleSystem.VERSION = [1, 0, 3];
+Akea.BattleSystem.VERSION = [1, 1, 0];
 
-
-Game_Battler.prototype.callAkeaActions = function (action, targets) {
-    switch (RegExp.$2) {
+Game_Battler.prototype.callAkeaActions = function (actionName, parameters, action, targets) {
+    let regex = /(\w+):\s*([^\s]*)/gm;
+    let id;
+    let param;
+    do {
+        param = regex.exec(parameters);
+        if (param) {
+            switch (RegExp.$1) {
+                case "id":
+                case "damage":
+                case "time":
+                    id = parseInt(RegExp.$2)
+                    break;
+            }
+        }
+    } while (param);
+    switch (actionName) {
         case "Randomize":
-            this._akeaAnimatedBSActions.addAkeaHit(RegExp.$3, targets, RegExp.$2, this, action);
+            this._akeaAnimatedBSActions.addAkeaHit(id, targets, actionName, this, action);
             break;
         case "Actions":
-            this._akeaAnimatedBSActions.addAkeaSkillActions(RegExp.$3, targets, RegExp.$2, action);
+            this._akeaAnimatedBSActions.addAkeaSkillActions(id, targets, actionName, action);
             break;
         case "ActionEnemy":
-            this._akeaAnimatedBSActions.addAkeaSkillActionsEnemy(RegExp.$3, targets, RegExp.$2, this, action);
+            this._akeaAnimatedBSActions.addAkeaSkillActionsEnemy(id, targets, actionName, this, action);
             break;
         case "AniTarget":
-            this._akeaAnimatedBSActions.addAkeaAnimation(RegExp.$3, targets, RegExp.$2, action);
+            this._akeaAnimatedBSActions.addAkeaAnimation(id, targets, actionName, action);
             break;
         case "AniSelf":
-            this._akeaAnimatedBSActions.addAkeaAnimation(RegExp.$3, [this], RegExp.$2, action);
+            this._akeaAnimatedBSActions.addAkeaAnimation(id, [this], actionName, action);
             break;
         case "Script":
-            this._akeaAnimatedBSActions.addAkeaScript(RegExp.$3, targets, RegExp.$2, this, action);
+            this._akeaAnimatedBSActions.addAkeaScript(id, targets, actionName, this, action);
             break;
         case "Skill":
-            this.translateSkillActions(action, targets, $dataSkills[RegExp.$3], action);
+            this.translateSkillActions(action, targets, $dataSkills[id], action);
             break;
         case "HitWeapon":
         case "Hit":
-            this._akeaAnimatedBSActions.addAkeaHit(RegExp.$3, targets, RegExp.$2, this, action);
+            this._akeaAnimatedBSActions.addAkeaHit(id, targets, actionName, this, action);
             break;
         case "HitAll":
-            this._akeaAnimatedBSActions.addAkeaHit(RegExp.$3, targets, RegExp.$2, this, action);
+            this._akeaAnimatedBSActions.addAkeaHit(id, targets, actionName, this, action);
             break;
         case "Wait":
-            this._akeaAnimatedBSActions.addAkeaHit(RegExp.$3, targets, RegExp.$2, this, action);
+            this._akeaAnimatedBSActions.addAkeaHit(id, targets, actionName, this, action);
             break;
     }
 };
@@ -583,13 +599,14 @@ Game_Akea_Actions.prototype.addCustomAddon = function (id, targets, type, subjec
     this.addAkeaHit(id, targets, type, subject, moveAction);
 }
 
-Game_Akea_Actions.prototype.addAkeaHit = function (id, targets, type, subject, moveAction) {
+Game_Akea_Actions.prototype.addAkeaHit = function (id, targets, type, subject, moveAction, object) {
     let action = new Game_Akea_Action();
     action.setActionType(type);
     action.setId(id);
     action.setTargets(targets);
     action.setSubject(subject);
     action.setAction(moveAction);
+    action.setObject(object);
     this.action = moveAction;
     this._actions.push(action);
 }
@@ -666,7 +683,12 @@ Game_Akea_Action.prototype.initialize = function () {
     this._enemy = "";
     this._id = 0;
     this._mirror = false;
+    this._object;
 };
+
+Game_Akea_Action.prototype.setObject = function (object) {
+    this._object = object;
+}
 Game_Akea_Action.prototype.setPose = function (pose) {
     this._pose = pose;
 }
@@ -763,7 +785,9 @@ Game_Akea_Action.prototype.getActionId = function () {
 Game_Akea_Action.prototype.getDuration = function () {
     return this._duration;
 }
-
+Game_Akea_Action.prototype.getObject = function () {
+    return this._object;
+}
 
 
 Sprite_Battler.prototype.startMotion = function (motionType) {
@@ -1047,7 +1071,7 @@ Sprite_Battler.prototype.swapToSingleBitmap = function () {
 
 };
 
-Sprite_Enemy.prototype.updateFrame = function() {
+Sprite_Enemy.prototype.updateFrame = function () {
     Sprite_Battler.prototype.updateFrame.call(this);
 };
 
@@ -1372,7 +1396,7 @@ Game_Battler.prototype.onBattleStart = function (advantageous) {
     }
 };
 Game_Battler.prototype.translateSkillActions = function (action, targets, notes) {
-    let regex = /(^<akea(\w+)\s*(\S+)*>)/gm;
+    let regex = /^<akea(\w+)*>([^<]*)<\/akea\w+>/gm;
     this.initialTargets = [];
     for (const target of targets) { this.initialTargets.push(target) }
 
@@ -1380,7 +1404,7 @@ Game_Battler.prototype.translateSkillActions = function (action, targets, notes)
     do {
         m = regex.exec(notes);
         if (m) {
-            this.callAkeaActions(action, targets);
+            this.callAkeaActions(RegExp.$1, RegExp.$2, action, targets);
         }
     } while (m);
     this._akeaAnimatedBSActions.addAkeaHit(1, this.initialTargets, "FinishAction", this, this.initialAction);
@@ -1565,3 +1589,4 @@ Sprite_Enemy.prototype.updateBitmap = function () {
     if (needsToUpdateMainSprite)
         this._mainSprite.setHue(hue);
 };
+
