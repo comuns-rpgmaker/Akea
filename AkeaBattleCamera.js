@@ -382,13 +382,12 @@ if (!Akea.BattleSystem) throw new Error("AkeaBattleCamera plugin needs the AkeaA
 
     Game_BattleCamera.prototype.focusIn = function (target, zoom, time) {
         target = this._spriteset.findTargetSprite(target);
-        const scaleX = zoom || this._scaleX;
-
-        const scaleY = zoom || this._scaleY;
-        const maxScaleX = -Graphics.width * (scaleX - 1.0);
-        const maxScaleY = -Graphics.height * (scaleY - 1.0);
-        const x = -target.x * scaleX + Graphics.width/2;
-        const y = -target.y * scaleY + Graphics.height/2;
+        let scaleX = zoom || this._scaleX;
+        let scaleY = zoom || this._scaleY;
+        const ojamaX = (Graphics.width - Graphics.boxWidth) / 2;
+        const ojamaY = (Graphics.height - Graphics.boxHeight) / 2;;
+        const x = (((-target.x - ojamaX) * scaleX) + (Graphics.width / 2)) + this._offset.x;
+        const y = (((-target.y - ojamaY) * scaleY) + (Graphics.height / 2)) + this._offset.y;
         const duration = time || 1;
         this.move(x, y, scaleX, scaleY, duration);
     }
