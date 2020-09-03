@@ -579,7 +579,7 @@ if (!Akea.BattleSystem) throw new Error("AkeaBattleCamera plugin needs the AkeaA
             case "CameraMode":
                 params = action.getId().split(",");
                 mode = parseInt(params[0]);
-                if (mode < 0 && mode > 3) return;
+                if (mode < 0 || mode > 3) return;
                 SceneManager.battleCamera().setCameraMode(mode);
                 break;
             case "CameraReset":
