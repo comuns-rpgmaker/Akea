@@ -88,7 +88,7 @@
 // No touching this part!
 var Akea = Akea || {};
 Akea.BattleAfterImage = Akea.BattleAfterImage || {};
-Akea.BattleAfterImage.VERSION = [1, 0, 0];
+Akea.BattleAfterImage.VERSION = [1, 0, 1];
 
 if (!Akea.BattleSystem) throw new Error("AkeaBattleAfterImage plugin needs the AkeaAnimatedBattleSystem base.");
 if (Akea.BattleSystem.VERSION < [1, 1, 0]) throw new Error("This plugin only works with versions 1.1.0 or higher of the Akea Animated Battle System ");
@@ -243,7 +243,7 @@ if (Akea.BattleSystem.VERSION < [1, 1, 0]) throw new Error("This plugin only wor
         this._variableHueShift = parseInt(configuration["hueVariation"]);
         this._fadeSpeed = parseInt(configuration["fadeSpeed"]);
         const params = action.getObject();
-        if (params){
+        if (params) {
             if (params["shadowNumber"]) { this._maxImages = parseInt(params["shadowNumber"]) };
             if (params["frequency"]) { this._frequency = parseInt(params["frequency"]) };
             if (params["hueShift"]) { this._hueShift = parseInt(params["hueShift"]) };
@@ -296,5 +296,10 @@ if (Akea.BattleSystem.VERSION < [1, 1, 0]) throw new Error("This plugin only wor
     }
     BattleManager.addAkeaAfterImages = function (sprite) {
         this._spriteset._battleField.addChild(sprite);
+    };
+    const _akeaBattlerAfterImage_Sprite_Battler_onMoveEnd = Sprite_Battler.prototype.onMoveEnd;
+    Sprite_Battler.prototype.onMoveEnd = function () {
+        this._akeaBattlersAfterImage.stopImages();
+        _akeaBattlerAfterImage_Sprite_Battler_onMoveEnd.call(this, ...arguments);
     };
 })();
