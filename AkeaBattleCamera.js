@@ -1,7 +1,7 @@
 //==========================================================================
 // Akea - Battle Camera
 //----------------------------------------------------------------------------
-// 02/08/20 | Version: 1.0.0
+// 02/08/20 | Version: 1.0.5
 // This software is released under the zlib License.
 //============================================================================
 
@@ -24,40 +24,59 @@
  * plugin parameters.
  * 
  * Next check out the skill notes available to control the camera during 
- * the skills. The parameters in brackets {param1, param2 ...} are 
- * optional, but must be entered without the brackets, as shown in the 
- * examples.
+ * the skills. The parameters signed as (optional) are not required. Those 
+ * without any signage are required.
  * 
  * Skill Notes Tag:
- *   <akeaCameraOnUser {duration{,zoom}}>
+ *   <akeaCameraOnUser>
+ *   zoom: number (optional)
+ *   time: number (optional)
+ *   </akeaCameraOnUser>
  *       | Sets the camera for the skill user.
- *       | duration: the camera movement speed
  *       | zoom: the camera zoom scale
+ *       | time: the camera movement duration
  * 
- *   <akeaCameraOnTarget id{,duration{,zoom}}>
+ *   <akeaCameraOnTarget>
+ *   id:   number
+ *   zoom: number (optional)
+ *   time: number (optional)
+ *   </akeaCameraOnTarget>
  *       | Sets the camera for the id target.
  *       | id: the target id
- *       | duration: the camera movement speed
  *       | zoom: the camera zoom scale
+ *       | time: the camera movement duration
  * 
- *   <akeaCameraAbsolute x,y,zoom,duration>
+ *   <akeaCameraAbsolute>
+ *   x:    number
+ *   y:    number
+ *   zoom: number
+ *   time: number
+ *   </akeaCameraAbsolute>
  *       | Sets the camera to the absolute coordinate.
  *       | x: the x coordinate
  *       | y: the y coordinate
  *       | zoom: the camera zoom scale
- *       | duration: the camera movement speed
+ *       | time: the camera movement duration
  * 
- *   <akeaCameraZoom zoom{,duration}>
+ *   <akeaCameraZoom>
+ *   zoom: number
+ *   time: number (optional)
+ *   </akeaCameraZoom>
  *       | Sets the camera zoom scale at the current coordinate.
  *       | zoom: the camera zoom scale
- *       | duration: the camera movement speed
+ *       | time: the camera movement duration
  * 
- *   <akeaCameraOffset x,y>
+ *   <akeaCameraOffset>
+ *   x: number
+ *   y: number
+ *   </akeaCameraOffset>
  *       | Sets the camera offset.
  *       | x: the x coordinate
  *       | y: the y coordinate
  * 
- *   <akeaCameraMode mode>
+ *   <akeaCameraMode>
+ *   mode: number
+ *   </akeaCameraMode>
  *       | Sets the camera mode.
  *       | mode: the camera mode. 
  *       | - 0: Dynamic
@@ -65,46 +84,74 @@
  *       | - 2: Smoothing End
  *       | - 3: Full Smoothing
  * 
- *   <akeaCameraReset duration>
+ *   <akeaCameraReset>
+ *   time: number (optional)
+ *   </akeaCameraReset>
  *       | Resets all camera settings
- *       | duration: the camera movement speed
+ *       | time: the camera movement duration
  * 
  * Usage Examples:
  *   <akeaCameraOnUser>
+ *   </akeaCameraOnUser>
  *       | Focus the camera on the skill user.
- *   <akeaCameraOnUser 30,1.5>
+ *   <akeaCameraOnUser>
+ *   zoom: 1.5
+ *   time: 30
+ *   </akeaCameraOnUser>
  *       | Focus the camera on the skill user at speed 30 with 
  *       | a 1.5 zoom scale.
  * 
- *   <akeaCameraOnTarget 1>
+ *   <akeaCameraOnTarget>
+ *   id: 1
+ *   </akeaCameraOnTarget>
  *       | Focus the camera on the id 1 target.
- *   <akeaCameraOnTarget 2,60,1.2>
+ *   <akeaCameraOnTarget>
+ *   id:   2
+ *   zoom: 1.2
+ *   time: 60
+ *   </akeaCameraOnTarget>
  *       | Focus the camera on the id 2 target at speed 60 with 
  *       | a 1.2 zoom scale.
  * 
- *   <akeaCameraAbsolute 50,120,1,30>
+ *   <akeaCameraAbsolute>
+ *   x:    50
+ *   y:    120
+ *   zoom: 1
+ *   time: 30
+ *   </akeaCameraAbsolute>
  *       | Focus the camera on the 50 x 120 coordinates at speed 
  *       | 30 with a 1 zoom scale.
  * 
- *   <akeaCameraZoom 2>
+ *   <akeaCameraZoom>
+ *   zoom: 2
+ *   </akeaCameraZoom>
  *       | Changes the camera zoom scale to 2
- *   <akeaCameraZoom 1.2,20>
+ *   <akeaCameraZoom>
+ *   zoom: 1.2
+ *   time: 20
+ *   </akeaCameraZoom>
  *       | Changes the camera zoom scale to 1.2 at speed 20.
  * 
- *   <akeaCameraOffset 0,48>
+ *   <akeaCameraOffset>
+ *   x: 0
+ *   y: 48
+ *   </akeaCameraOffset>
  *       | Sets the camera offset to 0 x 48
  * 
- *   <akeaCameraMode 1>
+ *   <akeaCameraMode>
+ *   mode: 2
+ *   </akeaCameraMode>
  *       | Change the camera mode to 1 (Smoothing Start)
  * 
- *   <akeaCameraReset 30>
+ *   <akeaCameraReset>
+ *   time: 30
+ *   </akeaCameraReset>
  *       | Reset all camera changes at speed 30.
  * 
  * It may seem complex at first, but using and managing the camera 
- * is quite simple. Please just pay attention to the use of commas in 
- * the notes. The parameters must always be separated by commas, but 
-without spaces between them. Look carefully at the examples provided 
- * to have a basis.
+ * is quite simple. Just pay attention to the name of each required 
+ * parameter and which ones are optional.Look carefully at the examples 
+ * provided to have a basis.
  * 
  * For support and new plugins join our Discord server: 
  * https://discord.gg/GG85QRz
@@ -179,9 +226,10 @@ without spaces between them. Look carefully at the examples provided
 
 var Akea = Akea || {};
 Akea.BattleCamera = Akea.BattleCamera || {};
-Akea.BattleCamera.VERSION = [1, 0, 0];
+Akea.BattleCamera.VERSION = [1, 0, 5];
 
-if (!Akea.BattleSystem) throw new Error("AkeaBattleCamera plugin needs the AkeaAnimatedBattleSystem base.");
+if (!Akea.BattleSystem) throw new Error("This plugin needs the AkeaAnimatedBattleSystem base.");
+if (Akea.BattleSystem.VERSION < [1, 1, 0]) throw new Error("This plugin only works with versions 1.1.0 or higher of the Akea Animated Battle System.");
 
 (() => {
 
@@ -485,47 +533,39 @@ if (!Akea.BattleSystem) throw new Error("AkeaBattleCamera plugin needs the AkeaA
     // and actions.
 
     const _Game_Battler_callAkeaActions = Game_Battler.prototype.callAkeaActions;
-    Game_Battler.prototype.callAkeaActions = function (action, targets) {
-        _Game_Battler_callAkeaActions.call(this, action, targets);
-        switch (RegExp.$2) {
-            case "CameraOnUser":
-                this._akeaAnimatedBSActions.addAkeaCamera(RegExp.$3, targets, RegExp.$2, this, action);
-                break;
-            case "CameraOnTarget":
-                this._akeaAnimatedBSActions.addAkeaCamera(RegExp.$3, targets, RegExp.$2, this, action);
-                break;
-            case "CameraAbsolute":
-                this._akeaAnimatedBSActions.addAkeaCamera(RegExp.$3, targets, RegExp.$2, this, action);
-                break;
-            case "CameraZoom":
-                this._akeaAnimatedBSActions.addAkeaCamera(RegExp.$3, targets, RegExp.$2, this, action);
-                break;
-            case "CameraOffset":
-                this._akeaAnimatedBSActions.addAkeaCamera(RegExp.$3, targets, RegExp.$2, this, action);
-                break;
-            case "CameraMode":
-                this._akeaAnimatedBSActions.addAkeaCamera(RegExp.$3, targets, RegExp.$2, this, action);
-                break;
-            case "CameraReset":
-                this._akeaAnimatedBSActions.addAkeaCamera(RegExp.$3, targets, RegExp.$2, this, action);
-                break;
-        }
-    }
-
-    //-----------------------------------------------------------------------------
-    // Game_Akea_Actions
-    //
-    // This class manages Akea Battle Actions
-
-    Game_Akea_Actions.prototype.addAkeaCamera = function (id, targets, type, subject, moveAction) {
-        let action = new Game_Akea_Action();
-        action.setActionType(type);
-        action.setId(id);
-        action.setTargets(targets);
-        action.setSubject(subject);
-        action.setAction(moveAction);
-        this.action = moveAction;
-        this._actions.push(action);
+    Game_Battler.prototype.callAkeaActions = function (actionName, parameters, action, targets) {
+        _Game_Battler_callAkeaActions.call(this, actionName, parameters, action, targets)
+        let regex = /(\w+):\s*([^\s]*)/gm;
+        let id = {};
+        do {
+            param = regex.exec(parameters);
+            if (param) {
+                id[RegExp.$1] = RegExp.$2;
+            }
+        } while (param);
+            switch (actionName) {
+                case "CameraOnUser":
+                    this._akeaAnimatedBSActions.addCustomAddon(id, targets, actionName, this, action);
+                    break;
+                case "CameraOnTarget":
+                    this._akeaAnimatedBSActions.addCustomAddon(id, targets, actionName, this, action);
+                    break;
+                case "CameraAbsolute":
+                    this._akeaAnimatedBSActions.addCustomAddon(id, targets, actionName, this, action);
+                    break;
+                case "CameraZoom":
+                    this._akeaAnimatedBSActions.addCustomAddon(id, targets, actionName, this, action);
+                    break;
+                case "CameraOffset":
+                    this._akeaAnimatedBSActions.addCustomAddon(id, targets, actionName, this, action);
+                    break;
+                case "CameraMode":
+                    this._akeaAnimatedBSActions.addCustomAddon(id, targets, actionName, this, action);
+                    break;
+                case "CameraReset":
+                    this._akeaAnimatedBSActions.addCustomAddon(id, targets, actionName, this, action);
+                    break;
+            }
     }
 
     //-----------------------------------------------------------------------------
@@ -541,54 +581,54 @@ if (!Akea.BattleSystem) throw new Error("AkeaBattleCamera plugin needs the AkeaA
         let duration;
         switch (action.getActionType()) {
             case "CameraOnUser":
-                params = action.getId().split(",");
-                duration = parseInt(params[0]) || null;
-                zoom = parseFloat(params[1]) || null;
+                params = action.getId();
+                duration = parseInt(params.time) || null;
+                zoom = parseFloat(params.zoom) || null;
                 subject = action.getSubject();
                 SceneManager.battleCamera().focusIn(subject, zoom, duration);
                 break;
             case "CameraOnTarget":
-                params = action.getId().split(",");
-                id = parseInt(params[0]);
+                params = action.getId();
+                id = parseInt(params.id);
                 if (!id) return;
-                duration = parseInt(params[1]) || null;
-                zoom = parseFloat(params[2]) || null;
+                duration = parseInt(params.time);
+                zoom = parseFloat(params.zoom);
                 targets = action.getTargets();
                 if (!targets[id - 1]) return;
                 SceneManager.battleCamera().focusIn(targets[id - 1], zoom, duration);
                 break;
             case "CameraAbsolute":
-                params = action.getId().split(",");
-                x = parseInt(params[0]);
-                y = parseInt(params[1]);
-                zoom = parseFloat(params[2]);
-                duration = parseInt(params[3]);
+                params = action.getId();
+                x = parseInt(params.x);
+                y = parseInt(params.y);
+                duration = parseInt(params.time);
+                zoom = parseFloat(params.zoom);
                 if (!x || !y || !zoom || !duration) return;
                 SceneManager.battleCamera().move(x, y, zoom, duration);
                 break;
             case "CameraZoom":
-                params = action.getId()
-                zoom = parseFloat(params[0])
+                params = action.getId();
+                zoom = parseFloat(params.zoom);
                 if (!zoom) return;
-                duration = parseInt(params[1]) || 1;
+                duration = parseInt(params.time) || 1;
                 SceneManager.battleCamera().zoom(zoom, duration);
                 break;
             case "CameraOffset":
-                params = action.getId().split(",");
-                x = parseInt(params[0]);
-                y = parseInt(params[1]);
+                params = action.getId();
+                x = parseInt(params.x);
+                y = parseInt(params.y);
                 if (!x || !y) return;
                 SceneManager.battleCamera().setOffset(x, y);
                 break;
             case "CameraMode":
-                params = action.getId().split(",");
-                mode = parseInt(params[0]);
+                params = action.getId();
+                mode = parseInt(params.mode);
                 if (mode < 0 || mode > 3) return;
                 SceneManager.battleCamera().setCameraMode(mode);
                 break;
             case "CameraReset":
-                params = action.getId().split(",");
-                duration = parseInt(params[0]);
+                params = action.getId();
+                duration = parseInt(params.time);
                 if (!duration) return;
                 SceneManager.battleCamera().reset(duration);
                 break;
