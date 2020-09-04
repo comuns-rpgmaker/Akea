@@ -228,8 +228,8 @@ var Akea = Akea || {};
 Akea.BattleCamera = Akea.BattleCamera || {};
 Akea.BattleCamera.VERSION = [1, 0, 5];
 
-if (!Akea.BattleSystem) throw new Error("This plugin needs the AkeaAnimatedBattleSystem base.");
-if (Akea.BattleSystem.VERSION < [1, 1, 0]) throw new Error("This plugin only works with versions 1.1.0 or higher of the Akea Animated Battle System.");
+if (!Akea.BattleSystem) throw new Error("Akea Battle Camera plugin needs the Akea Animated Battle System base.");
+if (Akea.BattleSystem.VERSION < [1, 1, 0]) throw new Error("Akea Battle Camera plugin only works with versions 1.1.0 or higher of the Akea Animated Battle System.");
 
 (() => {
 
@@ -421,6 +421,7 @@ if (Akea.BattleSystem.VERSION < [1, 1, 0]) throw new Error("This plugin only wor
     };
 
     Game_BattleCamera.prototype.setOffset = function (x, y) {
+        console.log("Offset" ,x,y);
         this._offset = { x: x, y: y };
     };
 
@@ -434,8 +435,8 @@ if (Akea.BattleSystem.VERSION < [1, 1, 0]) throw new Error("This plugin only wor
         let scaleY = zoom || this._scaleY;
         const ojamaX = (Graphics.width - Graphics.boxWidth) / 2;
         const ojamaY = (Graphics.height - Graphics.boxHeight) / 2;;
-        const x = (((-target.x - ojamaX) * scaleX) + (Graphics.width / 2)) + this._offset.x;
-        const y = (((-target.y - ojamaY) * scaleY) + (Graphics.height / 2)) + this._offset.y;
+        const x = (((-target.x - ojamaX) * scaleX) + (Graphics.width / 2)) + this._offset.x * scaleX;
+        const y = (((-target.y - ojamaY) * scaleY) + (Graphics.height / 2)) + this._offset.y * scaleY;
         const duration = time || 1;
         this.move(x, y, scaleX, scaleY, duration);
     }
@@ -603,13 +604,11 @@ if (Akea.BattleSystem.VERSION < [1, 1, 0]) throw new Error("This plugin only wor
                 y = parseInt(params.y);
                 duration = parseInt(params.time);
                 zoom = parseFloat(params.zoom);
-                if (!x || !y || !zoom || !duration) return;
                 SceneManager.battleCamera().move(x, y, zoom, duration);
                 break;
             case "CameraZoom":
                 params = action.getId();
                 zoom = parseFloat(params.zoom);
-                if (!zoom) return;
                 duration = parseInt(params.time) || 1;
                 SceneManager.battleCamera().zoom(zoom, duration);
                 break;
@@ -617,19 +616,16 @@ if (Akea.BattleSystem.VERSION < [1, 1, 0]) throw new Error("This plugin only wor
                 params = action.getId();
                 x = parseInt(params.x);
                 y = parseInt(params.y);
-                if (!x || !y) return;
                 SceneManager.battleCamera().setOffset(x, y);
                 break;
             case "CameraMode":
                 params = action.getId();
                 mode = parseInt(params.mode);
-                if (mode < 0 || mode > 3) return;
                 SceneManager.battleCamera().setCameraMode(mode);
                 break;
             case "CameraReset":
                 params = action.getId();
                 duration = parseInt(params.time);
-                if (!duration) return;
                 SceneManager.battleCamera().reset(duration);
                 break;
         }
