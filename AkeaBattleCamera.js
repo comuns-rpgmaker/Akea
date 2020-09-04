@@ -421,7 +421,6 @@ if (Akea.BattleSystem.VERSION < [1, 1, 0]) throw new Error("Akea Battle Camera p
     };
 
     Game_BattleCamera.prototype.setOffset = function (x, y) {
-        console.log("Offset" ,x,y);
         this._offset = { x: x, y: y };
     };
 
