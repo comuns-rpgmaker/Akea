@@ -88,7 +88,7 @@
 // No touching this part!
 var Akea = Akea || {};
 Akea.BattleAfterImage = Akea.BattleAfterImage || {};
-Akea.BattleAfterImage.VERSION = [1, 0, 1];
+Akea.BattleAfterImage.VERSION = [1, 0, 2];
 
 if (!Akea.BattleSystem) throw new Error("AkeaBattleAfterImage plugin needs the AkeaAnimatedBattleSystem base.");
 if (Akea.BattleSystem.VERSION < [1, 1, 0]) throw new Error("This plugin only works with versions 1.1.0 or higher of the Akea Animated Battle System ");
@@ -299,7 +299,8 @@ if (Akea.BattleSystem.VERSION < [1, 1, 0]) throw new Error("This plugin only wor
     };
     const _akeaBattlerAfterImage_Sprite_Battler_onMoveEnd = Sprite_Battler.prototype.onMoveEnd;
     Sprite_Battler.prototype.onMoveEnd = function () {
-        this._akeaBattlersAfterImage.stopImages();
+        if (this.inHomePosition())
+            this._akeaBattlersAfterImage.stopImages();
         _akeaBattlerAfterImage_Sprite_Battler_onMoveEnd.call(this, ...arguments);
     };
 })();

@@ -372,7 +372,7 @@ Pretty simple right? Any questions, you know where to find me :)
 // No touching this part!
 var Akea = Akea || {};
 Akea.BattleSystem = Akea.BattleSystem || {};
-Akea.BattleSystem.VERSION = [1, 1, 0];
+Akea.BattleSystem.VERSION = [1, 1, 1];
 
 Game_Battler.prototype.callAkeaActions = function (actionName, parameters, action, targets) {
     let regex = /(\w+):\s*([^\s]*)/gm;
@@ -433,8 +433,14 @@ Sprite_Battler.prototype.manageAkeaActions = function (action) {
     let scriptCall;
     let originalLength;
     if (action.getTargets() && (!action.getTargets()[0] || action.getTargets()[0].hp == 0)) {
-        if (action.getTargets()[0])
+        if (action.getTargets()[0]){
             action.getTargets()[0].clearAkeaAnimatedBSActions();
+        }
+        if (action.getTargets().length > 0 && action.getTargets()[0].hp == 0 && $dataSkills[action.getAction().item().id].scope == 1) {
+            action.getTargets()[0].clearAkeaAnimatedBSActions();
+            BattleManager.akeaEmptyWindow();
+            return;
+        }
         this._battler.getAkeaAnimatedBSActions().newTarget();
         BattleManager.akeaEmptyWindow();
     }
@@ -595,8 +601,8 @@ Game_Akea_Actions.prototype.addAkeaSkillActionsEnemy = function (id, targets, ty
     this.action = moveAction;
     this._actions.push(action);
 }
-Game_Akea_Actions.prototype.addCustomAddon = function (id, targets, type, subject, moveAction) {
-    this.addAkeaHit(id, targets, type, subject, moveAction);
+Game_Akea_Actions.prototype.addCustomAddon = function (id, targets, type, subject, moveAction, object) {
+    this.addAkeaHit(id, targets, type, subject, moveAction, object);
 }
 
 Game_Akea_Actions.prototype.addAkeaHit = function (id, targets, type, subject, moveAction, object) {
@@ -1262,8 +1268,7 @@ Sprite_Battler.prototype.stepBack = function () {
     const akeaParametersSheet = JSON.parse(this.akeaParameters['returnAction']);
     this._battler._akeaAnimatedBSActions.idToAction(parseInt(akeaParametersSheet), [], [])
     let action = this._battler.getAkeaAnimatedBSActions().unloadAction();
-    this.startMotion(action.getPose());
-    this.startMove(0, 0, action.getDuration(), action.getJumpHeight(), action.getLevitation());
+    this.akeaActionTranslate(action);
 }
 
 Sprite_Actor.prototype.startEntryMotion = function () {
@@ -1399,7 +1404,6 @@ Game_Battler.prototype.translateSkillActions = function (action, targets, notes)
     let regex = /^<akea(\w+)*>([^<]*)<\/akea\w+>/gm;
     this.initialTargets = [];
     for (const target of targets) { this.initialTargets.push(target) }
-
     this.initialAction = JsonEx.parse(JsonEx.stringify(action));
     do {
         m = regex.exec(notes);
