@@ -4,7 +4,7 @@
 // RPG Maker MZ - Akea Team Battle Skill
 //=============================================================================
  * @target MZ
- * @plugindesc Akea Battler After Image
+ * @plugindesc Akea Team Battle Skill
  * @author Reisen (Mauricio Pastana)
  * @url https://www.patreon.com/raizen884
 
@@ -30,6 +30,17 @@
  * the one that dictates each other member 
  * 
  * The actions are <akeaTeam>action:Name of the action...
+ * <akeaTeam>
+ * action: Name of the action without the akea prefix Ex: for akeaCameraOnUser it becomes only
+ * action:CameraOnUser
+ * teamId: This is the position of the team on the group configured in the parameters,
+ * if the actor is on the second group of the parameters:
+ * teamId: 2
+ * Do note for the first group, you can use just the normal actions as usual.
+ * then you close it with
+ * </akeaTeam>
+ * 
+ * 
  * <akeaTeam>action:Actions teamId:2 id: 8</akeaTeam>
  * this will make the second member of the group do the Actions of id 8
  * 
@@ -80,7 +91,7 @@
 // No touching this part!
 var Akea = Akea || {};
 Akea.BattleTeamSkill = Akea.BattleTeamSkill || {};
-Akea.BattleTeamSkill.VERSION = [1, 0, 0];
+Akea.BattleTeamSkill.VERSION = [1, 0, 1];
 
 //if (!Akea.BattleSystem) throw new Error("AkeaBattleAfterImage plugin needs the AkeaAnimatedBattleSystem base.");
 //if (Akea.BattleSystem.VERSION < [1, 1, 1]) throw new Error("This plugin only works with versions 1.1.1 or higher of the Akea Animated Battle System ");
@@ -423,6 +434,15 @@ Akea.BattleTeamSkill.VERSION = [1, 0, 0];
                 break;
             case "TeamStopAfterImage":
                 action.getSubject()._akeaAnimatedBSActions.addCustomAddon(action.getId(), action.getTargets(), action.getActionType().replace("Team", ""), action.getSubject(), action.getAction(), action.getObject());
+                break;
+            case "TeamCameraOnUser":
+            case "TeamCameraOnTarget":
+            case "TeamCameraAbsolute":
+            case "TeamCameraZoom":
+            case "TeamCameraOffset":
+            case "TeamCameraMode":
+            case "TeamCameraReset":
+                action.getSubject()._akeaAnimatedBSActions.addCustomAddon(action.getObject(), action.getTargets(), action.getActionType().replace("Team", ""), action.getSubject(), action.getAction(), action.getObject());
                 break;
         }
     }
