@@ -34,22 +34,30 @@
  *   speed: number (optional, 5 is default if not configured)
  *   brightness: number (optional, 0.9 is default if not configured)
  *   wavelength: number (optional, 300 is default)
+ *   x: number (optional, for correction)
+ *   y: number (optional, for correction)
  *   </akeaShockwaveUser>
  *       | Creates a shockwave effect on the user.
  *       | speed: The speed the wave will travel
  *       | brightness: how bright is the shockwave from 0-1, the closer to 0, the darker it is.
  *       | wavelength: how thick is the wavelength in pixels
- *
+ *       | x: x offset from the user for correction
+ *       | y: y offset from the user for correction
+ * 
  *   <akeaShockwaveTarget>
  *   speed: number (optional, 5 is default if not configured)
  *   brightness: number (optional, 0.9 is default if not configured)
  *   wavelength: number (optional, 300 is default)
+ *   x: number (optional, for correction)
+ *   y: number (optional, for correction)
  *   </akeaShockwaveTarget>
  *       | Creates a shockwave effect on the target.
  *       | speed: The speed the wave will travel
  *       | brightness: how bright is the shockwave from 0-1, the closer to 0, the darker it is.
  *       | wavelength: how thick is the wavelength in pixels
- *
+ *       | x: x offset from the target for correction
+ *       | y: y offset from the target for correction
+ * 
  *   <akeaShockwaveAbsolute>
  *   speed: number (optional, 5 is default if not configured)
  *   brightness: number (optional, 0.9 is default if not configured)
@@ -68,8 +76,8 @@
 
  */
 
- // Please do not modify here!
- 
+// Please do not modify here!
+
 var Akea = Akea || {};
 Akea.BattleShockwave = Akea.BattleShockwave || {};
 Akea.BattleShockwave.VERSION = [1, 0, 0];
@@ -103,18 +111,13 @@ if (Akea.BattleSystem.VERSION < [1, 1, 0]) throw new Error("Akea Battle Shockwav
         _battlerControl_Game_Battler_callAkeaActions.call(this, ...arguments);
         let regex = /(\w+):\s*([^\s]*)/gm;
         let obj = {};
-        let id = false;
+        let id = 0;
         do {
             param = regex.exec(parameters);
             if (param) {
-                if (RegExp.$1 == "id") {
-                    id = parseInt(RegExp.$2);
-                } else {
-                    obj[RegExp.$1] = RegExp.$2;
-                }
+                obj[RegExp.$1] = RegExp.$2;
             }
         } while (param);
-        if (!id) { id = 1 };
         if (actionName == "ShockwaveUser") {
             this._akeaAnimatedBSActions.addCustomAddon(id, targets, actionName, this, action, obj);
         } else if (actionName == "ShockwaveTarget") {
@@ -133,16 +136,16 @@ if (Akea.BattleSystem.VERSION < [1, 1, 0]) throw new Error("Akea Battle Shockwav
                 speed = parseInt(obj["speed"]) || 5;
                 brightness = parseFloat(obj["brightness"]) || 0.5;
                 wavelength = parseInt(obj["wavelength"]) || 300;
-                x = action.getSubject().screenX();
-                y = action.getSubject().screenY();
+                x = action.getSubject().screenX() + (parseInt(obj["x"]) || 0);
+                y = action.getSubject().screenY() + (parseInt(obj["y"]) || 0);
                 BattleManager.callShockwave(speed, brightness, wavelength, x, y);
                 break;
             case "ShockwaveTarget":
                 speed = parseInt(obj["speed"]) || 5;
                 brightness = parseFloat(obj["brightness"]) || 0.5;
                 wavelength = parseInt(obj["wavelength"]) || 300;
-                x = action.getTargets()[0].screenX();
-                y = action.getTargets()[0].screenY();
+                x = action.getTargets()[0].screenX() + (parseInt(obj["x"]) || 0);
+                y = action.getTargets()[0].screenY() + (parseInt(obj["y"]) || 0);
                 BattleManager.callShockwave(speed, brightness, wavelength, x, y);
                 break;
             case "ShockwaveAbsolute":
