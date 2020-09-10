@@ -17,10 +17,10 @@
  * Want to support new creations? be a patreon! 
  * 
  * powered by shockwave filter
- * @pixi/filter-shockwave - v3.1.0
+ * pixi/filter-shockwave - v3.1.0
  * Compiled Wed, 11 Mar 2020 20:38:18 UTC
  *
- * @pixi/filter-shockwave is licensed under the MIT License.
+ * pixi/filter-shockwave is licensed under the MIT License.
  * http://www.opensource.org/licenses/mit-license
 
  * Battle System Akea - Battle Shockwave Effect works on :
