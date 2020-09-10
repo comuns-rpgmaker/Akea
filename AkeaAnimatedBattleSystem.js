@@ -426,7 +426,6 @@ Game_Battler.prototype.callAkeaActions = function (actionName, parameters, actio
 };
 
 Sprite_Battler.prototype.manageAkeaActions = function (action) {
-    console.log(action)
     this._movementDuration = this._akeaMaxDuration = 1;
     let subject;
     let moveAction;
@@ -434,7 +433,6 @@ Sprite_Battler.prototype.manageAkeaActions = function (action) {
     let scriptCall;
     let originalLength;
     if (action.getTargets() && (!action.getTargets()[0] || action.getTargets()[0].hp == 0)) {
-        console.log($dataSkills[action.getAction().item().id].scope)
         if (action.getTargets()[0] && $dataSkills[action.getAction().item().id].scope != 0){
             action.getTargets()[0].clearAkeaAnimatedBSActions();
         }
