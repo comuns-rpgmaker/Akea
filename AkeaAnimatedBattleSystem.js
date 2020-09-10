@@ -372,7 +372,7 @@ Pretty simple right? Any questions, you know where to find me :)
 // No touching this part!
 var Akea = Akea || {};
 Akea.BattleSystem = Akea.BattleSystem || {};
-Akea.BattleSystem.VERSION = [1, 1, 1];
+Akea.BattleSystem.VERSION = [1, 1, 3];
 
 Game_Battler.prototype.callAkeaActions = function (actionName, parameters, action, targets) {
     let regex = /(\w+):\s*([^\s]*)/gm;
@@ -410,7 +410,7 @@ Game_Battler.prototype.callAkeaActions = function (actionName, parameters, actio
             this._akeaAnimatedBSActions.addAkeaScript(id, targets, actionName, this, action);
             break;
         case "Skill":
-            this.translateSkillActions(action, targets, $dataSkills[id], action);
+            this.translateSkillActions(action, targets, $dataSkills[id].note);
             break;
         case "HitWeapon":
         case "Hit":
@@ -426,6 +426,7 @@ Game_Battler.prototype.callAkeaActions = function (actionName, parameters, actio
 };
 
 Sprite_Battler.prototype.manageAkeaActions = function (action) {
+    console.log(action)
     this._movementDuration = this._akeaMaxDuration = 1;
     let subject;
     let moveAction;
@@ -433,7 +434,8 @@ Sprite_Battler.prototype.manageAkeaActions = function (action) {
     let scriptCall;
     let originalLength;
     if (action.getTargets() && (!action.getTargets()[0] || action.getTargets()[0].hp == 0)) {
-        if (action.getTargets()[0]){
+        console.log($dataSkills[action.getAction().item().id].scope)
+        if (action.getTargets()[0] && $dataSkills[action.getAction().item().id].scope != 0){
             action.getTargets()[0].clearAkeaAnimatedBSActions();
         }
         if (action.getTargets().length > 0 && action.getTargets()[0].hp == 0 && $dataSkills[action.getAction().item().id].scope == 1) {
@@ -444,7 +446,7 @@ Sprite_Battler.prototype.manageAkeaActions = function (action) {
         this._battler.getAkeaAnimatedBSActions().newTarget();
         BattleManager.akeaEmptyWindow();
     }
-    if (action.getTargets().length == 0) {
+    if (action.getTargets().length == 0 && $dataSkills[action.getAction().item().id].scope != 0) {
         targets = action.getTargets();
         this._battler.clearAkeaAnimatedBSActions();
         return;
@@ -516,6 +518,7 @@ Sprite_Battler.prototype.manageAkeaActions = function (action) {
             BattleManager.startActionLast(subject, moveAction, targets);
             break
         case "Wait":
+            this._jumpHeight = 0;
             this._movementDuration = this._akeaMaxDuration = action.getId();
             break
     }
