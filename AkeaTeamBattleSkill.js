@@ -72,17 +72,17 @@
 */
 /*~struct~TeamSkills:
  * @param skill
- * @type number
+ * @type skill
  * @default 174
  * @text Skill Id
  * @desc Skill id of the team skill on the database
  * @param members
- * @type number[][]
+ * @type actor[][]
  * @default [[2], [8]]
  * @text Members Group
  * @desc Group of members, you can add more than 1 actor in each group, you can add as many groups as you want.
  * @param baseSkills
- * @type number[]
+ * @type skill[]
  * @default [20, 21]
  * @text Base Skills
  * @desc Base skills for the groups above, these skills are used as bases for mp/tp cost, and skill learning.
@@ -91,7 +91,7 @@
 // No touching this part!
 var Akea = Akea || {};
 Akea.BattleTeamSkill = Akea.BattleTeamSkill || {};
-Akea.BattleTeamSkill.VERSION = [1, 0, 1];
+Akea.BattleTeamSkill.VERSION = [1, 0, 2];
 
 //if (!Akea.BattleSystem) throw new Error("AkeaBattleAfterImage plugin needs the AkeaAnimatedBattleSystem base.");
 //if (Akea.BattleSystem.VERSION < [1, 1, 1]) throw new Error("This plugin only works with versions 1.1.1 or higher of the Akea Animated Battle System ");
