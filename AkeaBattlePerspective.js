@@ -48,24 +48,24 @@
 // No touching this part!
 var Akea = Akea || {};
 Akea.BattlePerspective = Akea.BattlePerspective || {};
-Akea.BattlePerspective.VERSION = [1, 0, 0];
-
-const pluginName = "AkeaBattlePerspective";
-const akeaBPParameters = PluginManager.parameters('AkeaBattlePerspective');
-const akeaPerspectiveValues = JSON.parse(akeaBPParameters['Default Battle Perspective']);
-Akea.BattlePerspective.vanishingPoint = parseInt(akeaPerspectiveValues.vanishingPoint);
-Akea.BattlePerspective.pointOfView = parseInt(akeaPerspectiveValues.pointOfView);
-
-PluginManager.registerCommand(pluginName, "Battle Perspective", args => {
-    const arg = JSON.parse(args['perspective']);
-    Akea.BattlePerspective.vanishingPoint = parseInt(arg.vanishingPoint);
-    Akea.BattlePerspective.pointOfView = parseInt(arg.pointOfView);
-});
-//////////////////////////////////////////////////////////////////////////////////////////////////
-//                      Akea Battle Perspective
-//////////////////////////////////////////////////////////////////////////////////////////////////
-//-----------------------------------------------------------------------------
+Akea.BattlePerspective.VERSION = [1, 0, 1];
 (() => {
+    const pluginName = "AkeaBattlePerspective";
+    const akeaBPParameters = PluginManager.parameters('AkeaBattlePerspective');
+    const akeaPerspectiveValues = JSON.parse(akeaBPParameters['Default Battle Perspective']);
+    Akea.BattlePerspective.vanishingPoint = parseInt(akeaPerspectiveValues.vanishingPoint);
+    Akea.BattlePerspective.pointOfView = parseInt(akeaPerspectiveValues.pointOfView);
+
+    PluginManager.registerCommand(pluginName, "Battle Perspective", args => {
+        const arg = JSON.parse(args['perspective']);
+        Akea.BattlePerspective.vanishingPoint = parseInt(arg.vanishingPoint);
+        Akea.BattlePerspective.pointOfView = parseInt(arg.pointOfView);
+    });
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+    //                      Akea Battle Perspective
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+    //-----------------------------------------------------------------------------
+
     const _Sprite_Battler_updatePosition = Sprite_Battler.prototype.updatePosition;
     Sprite_Battler.prototype.updatePosition = function () {
         _Sprite_Battler_updatePosition.call(this, ...arguments);
