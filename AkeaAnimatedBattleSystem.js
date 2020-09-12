@@ -375,8 +375,9 @@ Pretty simple right? Any questions, you know where to find me :)
 // No touching this part!
 var Akea = Akea || {};
 Akea.BattleSystem = Akea.BattleSystem || {};
-Akea.BattleSystem.VERSION = [1, 1, 5];
+Akea.BattleSystem.VERSION = [1, 1, 6];
 
+"use strict";
 Game_Battler.prototype.callAkeaActions = function (actionName, parameters, action, targets) {
     let regex = /(\w+):\s*([^\s]*)/gm;
     let id;
@@ -413,7 +414,10 @@ Game_Battler.prototype.callAkeaActions = function (actionName, parameters, actio
             this._akeaAnimatedBSActions.addAkeaScript(id, targets, actionName, this, action);
             break;
         case "Skill":
-            this.translateSkillActions(action, targets, $dataSkills[id].note);
+            action = JsonEx.parse(JsonEx.stringify(this.initialAction));
+            action.setSkill(id);
+            let newTargets = action.makeTargets();
+            this.translateSkillActions(action, newTargets, $dataSkills[id].note, true);
             break;
         case "HitWeapon":
         case "Hit":
@@ -1422,18 +1426,25 @@ Game_Battler.prototype.onBattleStart = function (advantageous) {
         this.initTp();
     }
 };
-Game_Battler.prototype.translateSkillActions = function (action, targets, notes) {
+Game_Battler.prototype.translateSkillActions = function (action, targets, notes, extraHit = false) {
     let regex = /^<akea(\w+)*>([^<]*)<\/akea\w+>/gm;
-    this.initialTargets = [];
-    for (const target of targets) { this.initialTargets.push(target) }
-    this.initialAction = JsonEx.parse(JsonEx.stringify(action));
+    if (!extraHit) {
+        this.initialTargets = [];
+        for (const target of targets) { this.initialTargets.push(target) }
+        this.initialAction = JsonEx.parse(JsonEx.stringify(action));
+    }
+    let m;
     do {
         m = regex.exec(notes);
         if (m) {
             this.callAkeaActions(RegExp.$1, RegExp.$2, action, targets);
         }
     } while (m);
-    this._akeaAnimatedBSActions.addAkeaHit(1, this.initialTargets, "FinishAction", this, this.initialAction);
+    if (extraHit) {
+        this._akeaAnimatedBSActions.addAkeaHit(100, targets, "Hit", this, action);
+    } else {
+        this._akeaAnimatedBSActions.addAkeaHit(1, this.initialTargets, "FinishAction", this, this.initialAction);
+    }
 }
 
 
