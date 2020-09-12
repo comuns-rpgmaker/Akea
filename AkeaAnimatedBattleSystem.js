@@ -148,6 +148,10 @@
  * @type number
  * @text Step Back Action
  * @desc Action number to return battlers
+ * @param idleAction
+ * @type number
+ * @text Standing Action
+ * @desc Action number that battlers will have when on starting point
  * @param stepForward
  * @type number
  * @text Step Forward Action
@@ -188,7 +192,6 @@
  * @type text
  * @default 280 + index * 48
  * @desc formula of the battlers Y final spot when on the battle (only actors)
- 
 */
 /*~struct~EmbedPose:
  * @param id
@@ -372,7 +375,7 @@ Pretty simple right? Any questions, you know where to find me :)
 // No touching this part!
 var Akea = Akea || {};
 Akea.BattleSystem = Akea.BattleSystem || {};
-Akea.BattleSystem.VERSION = [1, 1, 3];
+Akea.BattleSystem.VERSION = [1, 1, 4];
 
 Game_Battler.prototype.callAkeaActions = function (actionName, parameters, action, targets) {
     let regex = /(\w+):\s*([^\s]*)/gm;
@@ -433,7 +436,7 @@ Sprite_Battler.prototype.manageAkeaActions = function (action) {
     let scriptCall;
     let originalLength;
     if (action.getTargets() && (!action.getTargets()[0] || action.getTargets()[0].hp == 0)) {
-        if (action.getTargets()[0] && $dataSkills[action.getAction().item().id].scope != 0){
+        if (action.getTargets()[0] && $dataSkills[action.getAction().item().id].scope != 0) {
             action.getTargets()[0].clearAkeaAnimatedBSActions();
         }
         if (action.getTargets().length > 0 && action.getTargets()[0].hp == 0 && $dataSkills[action.getAction().item().id].scope == 1) {
@@ -554,6 +557,7 @@ Game_Akea_Actions.prototype.originalTarget = function (targets) {
 Game_Akea_Actions.prototype.idToAction = function (id, targets, moveAction) {
     let actionObj = JSON.parse(this._akeaSkillList[id - 1]);
     let action = new Game_Akea_Action();
+    let mirror = actionObj.mirror == "true" ? true : false;
     action.setMovementType(actionObj.movementType);
     action.setPose(actionObj.pose);
     action.setDuration(parseInt(actionObj.time));
@@ -561,6 +565,7 @@ Game_Akea_Actions.prototype.idToAction = function (id, targets, moveAction) {
     action.setOffsetY(parseInt(actionObj.offsetY));
     action.setJumpHeight(parseInt(actionObj.jumpHeight));
     action.setTargets(targets);
+    action.setMirror(mirror);
     action.setAction(moveAction);
     this.action = moveAction;
     this._actions.push(action);
@@ -1263,13 +1268,13 @@ Sprite_Battler.prototype.evadeHit = function () {
     this.startMove(0, 0, action.getDuration(), action.getJumpHeight(), action.getLevitation());
 }
 
-
 Sprite_Battler.prototype.stepBack = function () {
     if (BattleManager._phase == "action") { return }
-    const akeaParametersSheet = JSON.parse(this.akeaParameters['returnAction']);
+    let akeaParametersSheet = JSON.parse(this.akeaParameters['returnAction']);
     this._battler._akeaAnimatedBSActions.idToAction(parseInt(akeaParametersSheet), [], [])
     let action = this._battler.getAkeaAnimatedBSActions().unloadAction();
     this.akeaActionTranslate(action);
+    this._battlerReturningToHome = true;
 }
 
 Sprite_Actor.prototype.startEntryMotion = function () {
@@ -1289,7 +1294,6 @@ Sprite_Actor.prototype.startEntryMotion = function () {
     }
 };
 
-
 Sprite_Enemy.prototype.createShadowSprite = function () {
     this._shadowSprite = new Sprite();
     this._shadowSprite.bitmap = ImageManager.loadSystem("Shadow2");
@@ -1299,19 +1303,36 @@ Sprite_Enemy.prototype.createShadowSprite = function () {
     this.addChild(this._shadowSprite);
 };
 
-
 Sprite_Enemy.prototype.updateShadow = function () {
     this._shadowSprite.visible = !!this._enemy;
 };
-
-
 
 Sprite_Enemy.prototype.updateTargetPosition = function () {
     if (this._enemy.canMove() && BattleManager.isEscaped()) {
     } else if (!this.inHomePosition()) {
         this.stepBack();
+    } else if (this.inHomePosition() && this._battlerReturningToHome) {
+        this.startIdleAction();
     }
 };
+
+const akeaAnimatedBS_Sprite_Actor_updateTargetPosition = Sprite_Actor.prototype.updateTargetPosition;
+Sprite_Actor.prototype.updateTargetPosition = function () {
+    akeaAnimatedBS_Sprite_Actor_updateTargetPosition.call(this, ...arguments);
+    if (this.inHomePosition() && this._battlerReturningToHome) {
+        this.startIdleAction();
+    }
+};
+
+Sprite_Battler.prototype.startIdleAction = function () {
+    let akeaParametersSheet = JSON.parse(this.akeaParameters['idleAction']);
+    this._battler._akeaAnimatedBSActions.idToAction(parseInt(akeaParametersSheet), [], [])
+    let action = this._battler.getAkeaAnimatedBSActions().unloadAction();
+    this.akeaActionTranslate(action);
+    this._battlerReturningToHome = false;
+}
+
+
 
 Sprite_Enemy.prototype.updateMain = function () {
     Sprite_Battler.prototype.updateMain.call(this);
