@@ -375,7 +375,7 @@ Pretty simple right? Any questions, you know where to find me :)
 // No touching this part!
 var Akea = Akea || {};
 Akea.BattleSystem = Akea.BattleSystem || {};
-Akea.BattleSystem.VERSION = [1, 1, 4];
+Akea.BattleSystem.VERSION = [1, 1, 5];
 
 Game_Battler.prototype.callAkeaActions = function (actionName, parameters, action, targets) {
     let regex = /(\w+):\s*([^\s]*)/gm;
@@ -1269,7 +1269,7 @@ Sprite_Battler.prototype.evadeHit = function () {
 }
 
 Sprite_Battler.prototype.stepBack = function () {
-    if (BattleManager._phase == "action") { return }
+    if (BattleManager._phase == "action" || !this._battler.isUndecided()) { return }
     let akeaParametersSheet = JSON.parse(this.akeaParameters['returnAction']);
     this._battler._akeaAnimatedBSActions.idToAction(parseInt(akeaParametersSheet), [], [])
     let action = this._battler.getAkeaAnimatedBSActions().unloadAction();

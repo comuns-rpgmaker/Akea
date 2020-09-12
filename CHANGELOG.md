@@ -3,3 +3,5 @@
 1.0.3 - Added weapon notes.
 1.1.0 - Changed how actions were called.
 1.1.1 - Fixed return to base bug (jumping)
+1.1.4 - Fixed return to base bug (extra action)
+1.1.5 - Fixed return to base before action
