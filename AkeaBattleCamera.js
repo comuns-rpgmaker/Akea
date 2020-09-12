@@ -417,7 +417,6 @@ if (Akea.BattleSystem.VERSION < [1, 1, 0]) throw new Error("Akea Battle Camera p
         this._offset = { x: 0, y: 0 };
         this._cameraMode = Akea.BattleCamera.defaultCameraMode;
         this._smoothExponent = Akea.BattleCamera.defaultSmoothExponent;
-        //  this._anchor = this._spriteset.children[0].pivot = new Point(0.5, 0.5);
     };
 
     Game_BattleCamera.prototype.setOffset = function (x, y) {
@@ -434,8 +433,8 @@ if (Akea.BattleSystem.VERSION < [1, 1, 0]) throw new Error("Akea Battle Camera p
         let scaleY = zoom || this._scaleY;
         const ojamaX = (Graphics.width - Graphics.boxWidth) / 2;
         const ojamaY = (Graphics.height - Graphics.boxHeight) / 2;;
-        const x = (((-target.x - ojamaX) * scaleX) + (Graphics.width / 2)) + this._offset.x * scaleX;
-        const y = (((-target.y - ojamaY) * scaleY) + (Graphics.height / 2)) + this._offset.y * scaleY;
+        let x = (((-target.x - ojamaX) * scaleX) + (Graphics.width / 2)) + this._offset.x * scaleX;
+        let y = (((-target.y - ojamaY) * scaleY) + (Graphics.height / 2)) + this._offset.y * scaleY;
         const duration = time || 1;
         this.move(x, y, scaleX, scaleY, duration);
     }
@@ -461,8 +460,6 @@ if (Akea.BattleSystem.VERSION < [1, 1, 0]) throw new Error("Akea Battle Camera p
         this._targetScaleY = scaleY;
         this._duration = duration;
         this._wholeDuration = duration;
-        this._cameraMode = 3;
-        this._smoothExponent = 2;
     }
 
     Game_BattleCamera.prototype.update = function () {
