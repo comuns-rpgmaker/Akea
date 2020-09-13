@@ -5,3 +5,4 @@
 1.1.1 - Fixed return to base bug (jumping)
 1.1.4 - Fixed return to base bug (extra action)
 1.1.5 - Fixed return to base before action
+1.1.6 - Fixed skill in notetags
