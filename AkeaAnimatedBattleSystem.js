@@ -1047,6 +1047,7 @@ Sprite_Battler.prototype.initialize = function () {
     this.akeaAnimatedBSMaxWidth = 9;
     this._levitation = 0;
     this._akeaMirroredMoves = false;
+    this._battlerReturningToHome = true;
     this.akeaMotions = JSON.parse(JSON.stringify(Sprite_Actor.MOTIONS));
     this.setAkeaBaseMotion();
     _akeaAnimatedBS_Sprite_Battler_initialize.call(this, ...arguments);
