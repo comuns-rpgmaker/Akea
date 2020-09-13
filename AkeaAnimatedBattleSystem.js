@@ -375,7 +375,7 @@ Pretty simple right? Any questions, you know where to find me :)
 // No touching this part!
 var Akea = Akea || {};
 Akea.BattleSystem = Akea.BattleSystem || {};
-Akea.BattleSystem.VERSION = [1, 1, 6];
+Akea.BattleSystem.VERSION = [1, 1, 7];
 
 "use strict";
 Game_Battler.prototype.callAkeaActions = function (actionName, parameters, action, targets) {
@@ -1273,7 +1273,7 @@ Sprite_Battler.prototype.evadeHit = function () {
 }
 
 Sprite_Battler.prototype.stepBack = function () {
-    if (BattleManager._phase == "action" || !this._battler.isUndecided()) { return }
+    if (BattleManager._phase == "action" || (BattleManager.isTpb() && !this._battler.isUndecided())) { return }
     let akeaParametersSheet = JSON.parse(this.akeaParameters['returnAction']);
     this._battler._akeaAnimatedBSActions.idToAction(parseInt(akeaParametersSheet), [], [])
     let action = this._battler.getAkeaAnimatedBSActions().unloadAction();
@@ -1626,4 +1626,3 @@ Sprite_Enemy.prototype.updateBitmap = function () {
     if (needsToUpdateMainSprite)
         this._mainSprite.setHue(hue);
 };
-
