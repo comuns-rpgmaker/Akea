@@ -1507,6 +1507,7 @@ BattleManager.startActionAkea = function (subject, action, targets) {
     this._logWindow.startAction(subject, action, targets);
 };
 BattleManager.startActionLast = function (subject, action, targets) {
+    if (this._phase == "battleEnd") { return };
     this._phase = "action";
     this._action = action;
     this._targets = targets;
@@ -1515,6 +1516,7 @@ BattleManager.startActionLast = function (subject, action, targets) {
     this._logWindow.startAction(subject, action, targets);
 }
 BattleManager.startAction = function () {
+    if (this._phase == "battleEnd") { return };
     const subject = this._subject;
     const action = subject.currentAction();
     const targets = action.makeTargets();
