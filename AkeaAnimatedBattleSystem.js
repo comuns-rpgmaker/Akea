@@ -113,7 +113,7 @@
  * @text Actor Spritesheet Configuration
  * @desc Configure Actor Spritesheet here, if an actor is not configured here, default spritesheet will be used.
  * @param Actor Poses
- * @type struct<EmbedPose>[]
+ * @type struct<EmbedPoseActor>[]
  * @text Actor Poses Configuration
  * @desc You can add any number of poses to an actor ID
  * @param Enemy Configuration
@@ -121,7 +121,7 @@
  * @text Enemy Spritesheet Configuration
  * @desc Configure Enemy Spritesheet here, if an enemy is not configured here, he will not use spritesheets.
  * @param Enemy Poses
- * @type struct<EmbedPose>[]
+ * @type struct<EmbedPoseEnemy>[]
  * @text Enemy Poses Configuration
  * @desc You can add any number of poses to an enemy ID
  * @param Poses
@@ -193,9 +193,19 @@
  * @default 280 + index * 48
  * @desc formula of the battlers Y final spot when on the battle (only actors)
 */
-/*~struct~EmbedPose:
+/*~struct~EmbedPoseActor:
  * @param id
- * @type number
+ * @type actor
+ * @default 1
+ * @desc Id of the Actor/Enemy to add the poses
+ * @param poses
+ * @type number[]
+ * @desc Poses that will be loaded for this character, they are configures on "Poses"
+*/
+
+/*~struct~EmbedPoseEnemy:
+ * @param id
+ * @type enemy
  * @default 1
  * @desc Id of the Actor/Enemy to add the poses
  * @param poses
@@ -233,7 +243,7 @@
 
 /*~struct~ActorPoses:
  * @param id
- * @type number
+ * @type actor
  * @default 1
  * @desc Id of actor or enemy on the database
  * @param baseSpritesheet
@@ -243,7 +253,7 @@
  */
 /*~struct~EnemyPoses:
  * @param id
- * @type number
+ * @type enemy
  * @default 1
  * @desc Id of actor or enemy on the database
  * @param baseSpritesheet
@@ -375,7 +385,7 @@ Pretty simple right? Any questions, you know where to find me :)
 // No touching this part!
 var Akea = Akea || {};
 Akea.BattleSystem = Akea.BattleSystem || {};
-Akea.BattleSystem.VERSION = [1, 1, 7];
+Akea.BattleSystem.VERSION = [1, 1, 8];
 
 "use strict";
 Game_Battler.prototype.callAkeaActions = function (actionName, parameters, action, targets) {
@@ -1012,7 +1022,6 @@ Sprite_Battler.prototype.configakeaAnimatedBSPoses = function (posesIndex) {
     const allPoses = JSON.parse(this.akeaParameters['Poses']);
     for (const poseIndex of posesIndex) { this.setSpecificAkeaPose(JSON.parse(allPoses[poseIndex - 1])) };
 };
-let test;
 Sprite_Battler.prototype.setSpecificAkeaPose = function (specificPose) {
 
     this.akeaMotions[specificPose.name] = {};
@@ -1274,7 +1283,7 @@ Sprite_Battler.prototype.evadeHit = function () {
 }
 
 Sprite_Battler.prototype.stepBack = function () {
-    if (BattleManager._phase == "action" || (BattleManager.isTpb() && !this._battler.isUndecided())) { return }
+    if (BattleManager._phase == "action" || (BattleManager.isTpb() && (!this._battler.isUndecided() && this._battler.isWaiting()))) { return }
     let akeaParametersSheet = JSON.parse(this.akeaParameters['returnAction']);
     this._battler._akeaAnimatedBSActions.idToAction(parseInt(akeaParametersSheet), [], [])
     let action = this._battler.getAkeaAnimatedBSActions().unloadAction();
