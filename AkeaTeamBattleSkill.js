@@ -91,7 +91,7 @@
 // No touching this part!
 var Akea = Akea || {};
 Akea.BattleTeamSkill = Akea.BattleTeamSkill || {};
-Akea.BattleTeamSkill.VERSION = [1, 0, 2];
+Akea.BattleTeamSkill.VERSION = [1, 0, 3];
 
 //if (!Akea.BattleSystem) throw new Error("AkeaBattleAfterImage plugin needs the AkeaAnimatedBattleSystem base.");
 //if (Akea.BattleSystem.VERSION < [1, 1, 1]) throw new Error("This plugin only works with versions 1.1.1 or higher of the Akea Animated Battle System ");
@@ -361,12 +361,11 @@ Akea.BattleTeamSkill.VERSION = [1, 0, 2];
     Window_BattleLog.prototype.processTeamSkill = function (subject, action, targets) {
         const item = action.item();
         const team = BattleManager.getAkeaTeamSkill().getTeam(subject);
-        for (const member of team) { this.push("performActionStart", member, action) };
+        //for (const member of team) { this.push("performActionStart", member, action) };
         this.push("waitForMovement");
         for (const member of team) { this.push("performAction", member, action) };
         for (const member of team) { this.push("showAnimation", member, targets.clone(), item.animationId) };
         for (const member of team) { this.displayAction(member, item) };
-
     }
 
     Game_Action.prototype.isValid = function () {
