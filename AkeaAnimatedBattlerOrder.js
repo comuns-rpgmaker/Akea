@@ -146,7 +146,7 @@
 // DON'T MODIFY THIS PART!!!
 var Akea = Akea || {};
 Akea.AnimatedBattlerOrder = Akea.AnimatedBattlerOrder || {};
-Akea.AnimatedBattlerOrder.VERSION = [1, 0, 0];
+Akea.AnimatedBattlerOrder.VERSION = [1, 0, 1];
 ImageManager.loadAkea = function (filename) {
     return this.loadBitmap("img/akea/", filename);
 };
@@ -298,7 +298,6 @@ ImageManager.loadAkea = function (filename) {
     Sprite_AkeaOrder.prototype.update = function () {
         Sprite.prototype.update.call(this);
         if (this._battler && this._battler.isAlive()) {
-
             if (this._battler.isActing() || (Akea.BattleSystem && this._battler.getAkeaAnimatedBSActions().hasActions())) {
                 this.moveToCenter();
             }
@@ -307,8 +306,9 @@ ImageManager.loadAkea = function (filename) {
                 this._hudFront.x = this._startingPoint[0] + this._rangeX * this._battler.tpbChargeTime();
                 this._hudFront.y = this._startingPoint[1] + this._rangeY * this._battler.tpbChargeTime();
             }
-
-        }
+        } else {
+			this._hudFront.opacity = 0;
+		};
     };
 
     Sprite_AkeaOrder.prototype.resetPosition = function () {
