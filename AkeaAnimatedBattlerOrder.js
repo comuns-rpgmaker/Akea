@@ -320,10 +320,14 @@ ImageManager.loadAkea = function (filename) {
     };
 
     Sprite_AkeaOrder.prototype.moveToCenter = function () {
+        if (this._centerCount == 0) {
+            this._diffX = (this._actingPos[0] - this._hudFront.x) / 10
+            this._diffY = (this._actingPos[1] - this._hudFront.y) / 10
+        }
         this._centerCount++;
         if (this._centerCount <= 10) {
-            this._hudFront.x += (this._actingPos[0] - this._hudFront.x) / 10
-            this._hudFront.y += (this._actingPos[1] - this._hudFront.y) / 10
+            this._hudFront.x += this._diffX
+            this._hudFront.y += this._diffY
             if (this._centerCount == 10) {
                 this._hudFront.x = this._actingPos[0];
                 this._hudFront.y = this._actingPos[1];
