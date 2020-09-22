@@ -2,13 +2,13 @@
 //==========================================================================
 // Akea Animated Cursor
 //----------------------------------------------------------------------------
-// 09/11/20 | Version: 1.0.0
+// 09/11/20 | Version: 1.0.1
 // This software is released under the zlib License.
 //============================================================================
 
 /*:
  * @target MZ
- * @plugindesc Akea Animated Cursor version: 1.0.0
+ * @plugindesc Akea Animated Cursor version: 1.0.1
  * @author Reisen (Mauricio Pastana)
  * @url https://www.patreon.com/raizen884
  * @orderAfter AkeaAnimatedBattleSystem
@@ -125,7 +125,7 @@
 // DON'T MODIFY THIS PART!!!
 var Akea = Akea || {};
 Akea.AnimatedCursor = Akea.AnimatedCursor || {};
-Akea.AnimatedCursor.VERSION = [1, 0, 0];
+Akea.AnimatedCursor.VERSION = [1, 0, 1];
 
 
 ImageManager.loadAkea = function (filename) {
@@ -189,8 +189,6 @@ ImageManager.loadAkea = function (filename) {
         this._akeaTargetName.bitmap = new Bitmap(360, 120)
         this._akeaTargetName.anchor.x = this._akeaTargetName.anchor.y = 0.5;
         if (this._battler.isEnemy()) {
-            if (Akea.BattleSystem)
-                this._akeaTargetName.scale.x = -1;
             this._akeaTargetName.bitmap.textColor = "#".concat(Akea.AnimatedCursor.EnemyFont.textColor);
             this._akeaTargetName.bitmap.outlineColor = "#".concat(Akea.AnimatedCursor.EnemyFont.outlineColor);
             this._akeaTargetName.bitmap.outlineWidth = parseInt(Akea.AnimatedCursor.EnemyFont.outlineWidth);
@@ -254,7 +252,7 @@ ImageManager.loadAkea = function (filename) {
     };
     Sprite_Battler.prototype.updateAkeaCursorReturnRotation = function () {
         this._akeaCursors.opacity -= 10;
-        if (this._battler.isEnemy() && !Akea.BattleSystem) {
+        if (this._battler.isEnemy()) {
             if (this._akeaCursors.rotation < Math.PI) {
                 this._akeaCursors.rotation += 0.05;
             }
@@ -267,7 +265,7 @@ ImageManager.loadAkea = function (filename) {
     };
     Sprite_Battler.prototype.updateAkeaCursorRotation = function () {
         this._akeaCursors.opacity += 10;
-        if (this._battler.isEnemy() && !Akea.BattleSystem) {
+        if (this._battler.isEnemy()) {
             if (this._akeaCursors.rotation > Math.PI * 1 / 4)
                 this._akeaCursors.rotation += (Math.PI * 1 / 4 - this._akeaCursors.rotation) / 10;
         }
