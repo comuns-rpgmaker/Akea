@@ -385,7 +385,7 @@ Pretty simple right? Any questions, you know where to find me :)
 // No touching this part!
 var Akea = Akea || {};
 Akea.BattleSystem = Akea.BattleSystem || {};
-Akea.BattleSystem.VERSION = [1, 1, 9];
+Akea.BattleSystem.VERSION = [1, 1, 10];
 
 "use strict";
 Game_Battler.prototype.callAkeaActions = function (actionName, parameters, action, targets) {
@@ -932,8 +932,8 @@ Sprite_Battler.prototype.updateAkeaFrame = function () {
         const cy = motionIndex % this.akeaAnimatedBSMaxHeight;
         this._mainSprite.setFrame(cx * cw, cy * ch, cw, ch);
         this.setFrame(0, 0, cw, ch);
-        this.mainSprite().scale.x = this._akeaMirror ? -1 : 1;
-        if (this._akeaMirroredMoves) { this.mainSprite().scale.x *= -1 };
+        this.scale.x = this._akeaMirror ? -1 : 1;
+        if (this._akeaMirroredMoves) { this.scale.x *= -1 };
     }
     return; // Below is old Frame
 }
