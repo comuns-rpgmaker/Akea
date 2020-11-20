@@ -181,6 +181,16 @@ if (Akea.BattleSystem.VERSION < [1, 1, 0]) throw new Error("This plugin only wor
     const _specificName_Game_Battler_callAkeaActions = Game_Battler.prototype.callAkeaActions
     Game_Battler.prototype.callAkeaActions = function (actionName, parameters, action, targets) {
         _specificName_Game_Battler_callAkeaActions.call(this, ...arguments);
+        if (parameters.indexOf(':') === -1) {
+            switch (actionName) {
+                case "AfterImage":
+                    parameters = `id: ${parameters}`;
+                    break;
+                case "StopAfterImage":
+                    parameters = '';
+                    break;
+            }
+        }
         let regex = /(\w+):\s*([^\s]*)/gm;
         let obj = {};
         let id = false;
