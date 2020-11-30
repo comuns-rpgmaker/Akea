@@ -1,4 +1,3 @@
-
 //=============================================================================
 // RPG Maker MZ AkeaAnimatedBattleSystem.js
 //=============================================================================
@@ -102,7 +101,6 @@
  * Do remeber this system was made optimized to accept most add-ons, so do not hesitate to
  * try an add-on with it!
  * 
-
  * @param Frame Configuration
  * @type struct<PosesFrames>[]
  * @text Spritesheet Configuration
@@ -168,6 +166,10 @@
  * @type number
  * @text Evade Action
  * @desc Action number to make battlers evade hits
+ * @param shortNoteNotation
+ * @type boolean
+ * @text Short Note Notation
+ * @desc Set true to use short note notation on skills and weapon notes
  */
 /*~struct~EntryPose:
  * @param action
@@ -347,10 +349,8 @@
 \\ It is a FIFO, so you can know the order of the actions here.
 \\ The Game_Akea_Actions and Game_Akea_Action hold the actions that will be passed to the
 \\ Sprite, you can if you wish to add new functions to better improve compatibility.
-
 \\ When creating your add-on, correctly alias callAkeaActions and manageAkeaActions
 \\ Example Below of a picture add-on.
-
 let _specificName_Game_Battler_callAkeaActions = Game_Battler.prototype.callAkeaActions
 Game_Battler.prototype.callAkeaActions = function (actionName, parameters, action, targets) {
     _specificName_Game_Battler_callAkeaActions.call(this, ...arguments);
@@ -367,7 +367,6 @@ Sprite_Battler.prototype.manageAkeaActions = function (action) {
         this.callMyFunction(action.getId(), action.getObject());   // If you used the addCustomAddon the parameters will be stored on getObject
     }
 }
-
 You can retrieve the targes of the action 
 action.getTargets() 
 The battler doing the action
@@ -377,33 +376,67 @@ action.getAction()
 or all the parameters passed if you used addCustomAddon
 action.getObject()
 Pretty simple right? Any questions, you know where to find me :)
-
-
 */
 
 // NÃO MEXE AQUI POR FAVOR :(!
 // No touching this part!
 var Akea = Akea || {};
 Akea.BattleSystem = Akea.BattleSystem || {};
-Akea.BattleSystem.VERSION = [1, 1, 10];
+Akea.BattleSystem.VERSION = [1, 1, 11];
+
+Akea.BattleSystem.GlobalSettings = Akea.BattleSystem.GlobalSettings || {};
+Akea.BattleSystem.GlobalSettings['shortNoteNotation'] = PluginManager.parameters('AkeaAnimatedBattleSystem')['shortNoteNotation'] === 'true';
+
+function checkDefaultParam(parameters, actionName){
+    if (parameters.indexOf(':') === -1) {
+        switch (actionName) {
+            case "Randomize":
+                return '';
+            case "Actions":
+            case "ActionEnemy":
+            case "AniTarget":
+            case "AniSelf":
+            case "Script":
+            case "Skill":
+                return `id: ${parameters}`;
+            case "HitWeapon":
+            case "Hit":
+            case "HitAll":
+                return `damage: ${parameters}`;
+            case "Wait":
+                return `time: ${parameters}`;
+        }
+    } else {
+        return parameters;
+    }
+}
 
 "use strict";
 Game_Battler.prototype.callAkeaActions = function (actionName, parameters, action, targets) {
+    let parsedParams = {};
+    let checkedParameters = checkDefaultParam(parameters, actionName);
     let regex = /(\w+):\s*([^\s]*)/gm;
     let id;
     let param;
     do {
-        param = regex.exec(parameters);
+        param = regex.exec(checkedParameters);
         if (param) {
             switch (RegExp.$1) {
                 case "id":
                 case "damage":
                 case "time":
-                    id = parseInt(RegExp.$2)
+                    parsedParams[RegExp.$1] = parseInt(RegExp.$2);
+                    break;
+                default:
+                    parsedParams[RegExp.$1] = RegExp.$2;
                     break;
             }
         }
     } while (param);
+    for (let key in parsedParams){
+        id = parsedParams[key];
+        break;
+    }
     switch (actionName) {
         case "Randomize":
             this._akeaAnimatedBSActions.addAkeaHit(id, targets, actionName, this, action);
@@ -1077,7 +1110,10 @@ Sprite_Battler.prototype.configureAkeaBattlerSheet = function (battler) {
 
     }
 
-    const characterSheet = akeaParametersSheet.find(sheet => JSON.parse(sheet).id == id)
+    let characterSheet = akeaParametersSheet.find(sheet => JSON.parse(sheet).id == id)
+    if (characterSheet === undefined) {
+        characterSheet = akeaParametersSheet.find(sheet => JSON.parse(sheet).id == 1);
+    }
     if (characterSheet) { this.setCharacterNewSheet(parseInt(JSON.parse(characterSheet).baseSpritesheet)) }
 }
 Sprite_Battler.prototype.setCharacterNewSheet = function (baseSheetNum) {
@@ -1437,7 +1473,13 @@ Game_Battler.prototype.onBattleStart = function (advantageous) {
     }
 };
 Game_Battler.prototype.translateSkillActions = function (action, targets, notes, extraHit = false) {
-    let regex = /^<akea(\w+)*>([^<]*)<\/akea\w+>/gm;
+    let regex;
+    if (Akea.BattleSystem.GlobalSettings['shortNoteNotation']){
+        regex = /^\$akea\.(\w+?)\(([^<]*?)\)/gm;
+    } else {
+        regex = /^<akea(\w+)*>([^<]*)<\/akea\w+>/gm;
+    }
+    
     if (!extraHit) {
         this.initialTargets = [];
         for (const target of targets) { this.initialTargets.push(target) }
@@ -1471,6 +1513,7 @@ Game_Actor.prototype.performAttack = function () {
             //this.requestMotion("thrust");
         } else if (attackMotion.type === 1) {
             //this.requestMotion("swing");
+
         } else if (attackMotion.type === 2) {
             //this.requestMotion("missile");
         }
