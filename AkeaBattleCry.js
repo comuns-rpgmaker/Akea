@@ -163,8 +163,8 @@ var Akea               = Akea || {};
 Akea.BattleCry         = Akea.BattleCry || {};
 Akea.BattleCry.VERSION = [1, 0, 0];
 
-if (!Akea.BattleSystem) throw new Error("Akea Battle Camera plugin needs the Akea Animated Battle System base.");
-if (Akea.BattleSystem.VERSION < [1, 1, 0]) throw new Error("Akea Battle Camera plugin only works with versions 1.1.0 or higher of the Akea Animated Battle System.");
+if (!Akea.BattleSystem) throw new Error("Akea Battle Cry plugin needs the Akea Animated Battle System base.");
+if (Akea.BattleSystem.VERSION < [1, 1, 0]) throw new Error("Akea Battle Cry plugin only works with versions 1.1.0 or higher of the Akea Animated Battle System.");
 
 (() => {
 
