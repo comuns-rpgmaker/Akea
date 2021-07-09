@@ -1,13 +1,20 @@
-//==========================================================================
-// Akea - Battle Camera
+//============================================================================
+// Akea Battle Camera
 //----------------------------------------------------------------------------
-// 02/08/20 | Version: 1.0.5
+// 07/07/21 | Version: 1.1.0 | Various improvements and fixes
+// 11/09/20 | Version: 1.0.5 | Fixed smooth exponent issue
+// 04/09/20 | Version: 1.0.4 | Fixed camera offset
+// 04/09/20 | Version: 1.0.3 | Akea 1.1.0 note style compatibility
+// 03/09/20 | Version: 1.0.2 | Fixed Ojima offset
+// 03/09/20 | Version: 1.0.1 | Fixed Camera angle
+// 02/09/20 | Version: 1.0.0 | Released
+//----------------------------------------------------------------------------
 // This software is released under the zlib License.
 //============================================================================
 
 /*:
  * @target MZ
- * @plugindesc Adds a camera to battle and allows to control it.
+ * @plugindesc [v1.1.0] Akea Battle Camera
  * @author Gabe (Gabriel Nascimento)
  * @url http://patreon.com/gabriel_nfd
  * @base AkeaAnimatedBattleSystem
@@ -429,12 +436,27 @@ if (Akea.BattleSystem.VERSION < [1, 1, 0]) throw new Error("Akea Battle Camera p
 
     Game_BattleCamera.prototype.focusIn = function (target, zoom, time) {
         target = this._spriteset.findTargetSprite(target);
-        let scaleX = zoom || this._scaleX;
-        let scaleY = zoom || this._scaleY;
-        const ojamaX = (Graphics.width - Graphics.boxWidth) / 2;
-        const ojamaY = (Graphics.height - Graphics.boxHeight) / 2;;
-        let x = (((-target.x - ojamaX) * scaleX) + (Graphics.width / 2)) + this._offset.x * scaleX;
-        let y = (((-target.y - ojamaY) * scaleY) + (Graphics.height / 2)) + this._offset.y * scaleY;
+        const scaleX = zoom || this._scaleX;
+        const scaleY = zoom || this._scaleY;
+        let maxX = Graphics.boxWidth - (Graphics.boxWidth * scaleX);
+        let x =  (Graphics.boxWidth / scaleX) - ((target.x + this._offset.x) * scaleX);
+        let maxY = Graphics.boxHeight - (Graphics.boxHeight * scaleY);
+        let y = (Graphics.boxHeight / scaleY) - (((target.y - (target.height / 2)) + this._offset.y) * scaleY);
+        x = this.checkCoord(x, maxX);
+        y = this.checkCoord(y, maxY);
+        const duration = time || 1;
+        this.move(x, y, scaleX, scaleY, duration);
+    }
+
+    Game_BattleCamera.prototype.moveIn = function (x, y, zoom, time) {
+        const scaleX = zoom || this._scaleX;
+        const scaleY = zoom || this._scaleY;
+        let maxX = (Graphics.width - (Graphics.width * scaleX) * 1);
+        x = this._x + ((x + this._offset.x) * scaleX);
+        let maxY = (Graphics.height - (Graphics.height * scaleY) * 1);
+        y = this._y + ((y + this._offset.y) * scaleY);
+        x = this.checkCoord(x, maxX);
+        y = this.checkCoord(y, maxY);
         const duration = time || 1;
         this.move(x, y, scaleX, scaleY, duration);
     }
@@ -523,6 +545,10 @@ if (Akea.BattleSystem.VERSION < [1, 1, 0]) throw new Error("Akea Battle Camera p
         }
     };
 
+    Game_BattleCamera.prototype.checkCoord = function(value, max) {
+        return Math.min(0 , Math.max(value, max))
+    }
+
     //-----------------------------------------------------------------------------
     // Game_Battler
     //
@@ -548,6 +574,9 @@ if (Akea.BattleSystem.VERSION < [1, 1, 0]) throw new Error("Akea Battle Camera p
                     this._akeaAnimatedBSActions.addCustomAddon(id, targets, actionName, this, action);
                     break;
                 case "CameraAbsolute":
+                    this._akeaAnimatedBSActions.addCustomAddon(id, targets, actionName, this, action);
+                    break;
+                case "CameraMove":
                     this._akeaAnimatedBSActions.addCustomAddon(id, targets, actionName, this, action);
                     break;
                 case "CameraZoom":
@@ -602,6 +631,14 @@ if (Akea.BattleSystem.VERSION < [1, 1, 0]) throw new Error("Akea Battle Camera p
                 zoom = parseFloat(params.zoom);
                 SceneManager.battleCamera().move(x, y, zoom, duration);
                 break;
+            case "CameraMove":
+                params = action.getId();
+                x = parseInt(params.x);
+                y = parseInt(params.y);
+                duration = parseInt(params.time);
+                zoom = parseFloat(params.zoom);
+                SceneManager.battleCamera().moveIn(x, y, zoom, duration);
+                break;
             case "CameraZoom":
                 params = action.getId();
                 zoom = parseFloat(params.zoom);
@@ -626,5 +663,21 @@ if (Akea.BattleSystem.VERSION < [1, 1, 0]) throw new Error("Akea Battle Camera p
                 break;
         }
     }
+
+    //-----------------------------------------------------------------------------
+    // Sprite_Animation
+    //
+    // The sprite for displaying an animation.
+
+    const _Sprite_Animation_updateEffectGeometry = Sprite_Animation.prototype.updateEffectGeometry;
+    Sprite_Animation.prototype.updateEffectGeometry = function() {
+        _Sprite_Animation_updateEffectGeometry.call(this);
+        if (SceneManager.battleCamera()) {
+            const scale = (this._animation.scale / 100) * SceneManager.battleCamera()._scaleX;
+            if (this._handle) {
+                this._handle.setScale(scale, scale, scale);
+            }
+        }
+    };
 
 })();
