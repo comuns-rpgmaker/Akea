@@ -672,7 +672,7 @@ if (Akea.BattleSystem.VERSION < [1, 1, 0]) throw new Error("Akea Battle Camera p
     const _Sprite_Animation_updateEffectGeometry = Sprite_Animation.prototype.updateEffectGeometry;
     Sprite_Animation.prototype.updateEffectGeometry = function() {
         _Sprite_Animation_updateEffectGeometry.call(this);
-        if (SceneManager.battleCamera()) {
+        if (SceneManager._scene instanceof Scene_Battle && SceneManager.battleCamera()) {
             const scale = (this._animation.scale / 100) * SceneManager.battleCamera()._scaleX;
             if (this._handle) {
                 this._handle.setScale(scale, scale, scale);
