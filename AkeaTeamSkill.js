@@ -101,7 +101,7 @@ Akea.BattleTeamSkill.VERSION = [1, 0, 3];
 //////////////////////////////////////////////////////////////////////////////////////////////////
 //-----------------------------------------------------------------------------
 (() => {
-
+    
     const pluginName = "AkeaTeamSkill";
     Akea.params = PluginManager.parameters(pluginName);
     Akea.BattleTeamSkill.TeamSkillGlobaConfigs = JSON.parse(Akea.params['Team Skills Configuration']);
@@ -464,4 +464,5 @@ Akea.BattleTeamSkill.VERSION = [1, 0, 3];
             }
         }
     };
+    BattleManager._akeaTeamSkills = new Game_AkeaTeamSkills();
 })();
