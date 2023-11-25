@@ -15,7 +15,7 @@
  * @base AkeaAnimatedBattleSystem
  * @orderAfter AkeaAnimatedBattleSystem
  * 
- * @help Akea - Battle Camera
+ * @help Akea - Visual Weapons
  *  - This plugin is released under the zlib License.
  *  - This plugin requires the AkeaAnimatedBattleSystem base plugin.
  * 
