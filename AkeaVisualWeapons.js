@@ -139,8 +139,6 @@
              this._mainSprite.bitmap = ImageManager.loadSvActor(actorName);
          }
      };
- 
- 
      
      const _Sprite_Actor_updateFrame = Sprite_Actor.prototype.updateFrame;
      Sprite_Actor.prototype.updateFrame = function() {
